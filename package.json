@@ -1,0 +1,22 @@
+{
+  "name": "software-for-agents",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AgentReady API Layer - MCP Server + Eval Harness MVP",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit && pnpm -r --parallel exec tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write \"**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@eslint/js": "^9.4.0",
+    "eslint": "^9.4.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.11.0",
+    "vitest": "^1.6.0"
+  }
+}
