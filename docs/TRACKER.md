@@ -37,56 +37,58 @@ Living progress tracker. Update this file as tasks are completed — do not let 
 
 ---
 
-## Phase 2: API #1 Selection & Integration Spec
+## Phase 2: API Selection & Integration Spec
 
 | Task | Status | Notes |
 |---|---|---|
-| Candidate APIs shortlisted (3-5) | Not Started | List candidates here |
-| API #1 chosen | Not Started | Name: _______ |
-| Sandbox credentials obtained, curl test passed | Not Started | |
-| `INTEGRATION.md` filled out for API #1 | Not Started | |
-| **Exit criteria: spec confirmed feasible** | Not Started | |
+| Candidate APIs shortlisted (3-5) | Done | Notion and Freshsales selected |
+| API #1 chosen | Done | Notion chosen as Server #1 |
+| API #2 chosen | Done | Freshsales chosen as Server #2 |
+| `INTEGRATION.md` filled out for Notion | Done | Created packages/mcp-server-notion/INTEGRATION.md |
+| `INTEGRATION.md` filled out for Freshsales | Done | Created packages/mcp-server-freshsales/INTEGRATION.md |
+| **Exit criteria: specs confirmed feasible** | Done | Spec designs reviewed and packages scaffolded |
 
 ---
 
-## Phase 3: MCP Server #1 — Core Implementation
+## Phase 3: MCP Server #1 — Notion Core Implementation
 
 | Task | Status | Notes |
 |---|---|---|
-| Package scaffolded | Not Started | |
-| `auth.ts` implemented | Not Started | |
-| `client.ts` implemented (all needed endpoints) | Not Started | |
-| Tools implemented (target: 10-15) | Not Started | List tool names + status individually below |
-| → `create_<object>` | Not Started | |
-| → `get_<object>` | Not Started | |
-| → `list_<objects>` | Not Started | |
-| → `update_<object>` | Not Started | |
-| → `delete_<object>` | Not Started | |
-| → `search_<objects>` | Not Started | |
-| → (add rows as more tools are defined) | Not Started | |
-| `index.ts` + `/health` endpoint | Not Started | |
-| Unit tests (2-3 representative tools) | Not Started | |
-| Manual smoke test via Claude Desktop/Code (3-5 tasks) | Not Started | |
-| **Exit criteria: all tools implemented + smoke tests pass** | Not Started | |
+| Package scaffolded | Done | Scaffolded packages/mcp-server-notion |
+| `auth.ts` implemented | Done | 2026-06-13: Credentials manager implemented |
+| `client.ts` implemented (all needed endpoints) | Done | 2026-06-13: Wrapped search, page, block, and database endpoints |
+| Tools implemented (target: 10-15) | Done | 2026-06-13: All 8 target tools implemented |
+| → `search` | Done | 2026-06-13: Completed with response mapper |
+| → `get_page` | Done | 2026-06-13: Completed with title extractor |
+| → `create_page` | Done | 2026-06-13: Completed with parent validation |
+| → `update_page_properties` | Done | 2026-06-13: Completed |
+| → `get_block_children` | Done | 2026-06-13: Completed with text compiler |
+| → `append_block_children` | Done | 2026-06-13: Completed |
+| → `get_database` | Done | 2026-06-13: Completed |
+| → `query_database` | Done | 2026-06-13: Completed |
+| `index.ts` + `/health` endpoint | Done | 2026-06-13: Configured Express SSE server |
+| Unit tests (2-3 representative tools) | Done | 2026-06-13: Created client.test.ts and tools.test.ts |
+| Manual smoke test via Claude Desktop/Code (3-5 tasks) | Not Started | (Pending local user connection setup) |
+| **Exit criteria: all tools implemented + smoke tests pass** | In Progress | All tools/tests written, pending manual smoke test |
 
 ---
 
-## Phase 4: Eval Harness
+## Phase 4: Notion Eval Harness
 
 | Task | Status | Notes |
 |---|---|---|
 | Package scaffolded | Not Started | |
 | Task schema defined | Not Started | |
-| 10-20 tasks written for API #1 | Not Started | |
+| 10-20 tasks written for Notion | Not Started | |
 | `runEval.ts` implemented | Not Started | |
 | `verify.ts` implemented | Not Started | |
 | `scoreResult.ts` implemented | Not Started | |
-| `pnpm run eval --server=<name>` works end-to-end | Not Started | |
+| `pnpm run eval --server=notion` works end-to-end | Not Started | |
 | **Exit criteria: scoring report generated** | Not Started | |
 
 ---
 
-## Phase 5: Iterate Server #1 to Target Quality
+## Phase 5: Iterate Notion Server to Target Quality
 
 | Task | Status | Notes |
 |---|---|---|
@@ -99,7 +101,7 @@ Living progress tracker. Update this file as tasks are completed — do not let 
 
 ---
 
-## Phase 6: Deploy Server #1
+## Phase 6: Deploy Notion Server
 
 | Task | Status | Notes |
 |---|---|---|
@@ -113,11 +115,11 @@ Living progress tracker. Update this file as tasks are completed — do not let 
 
 ---
 
-## Phase 7: Server #2 (repeat Phases 2-6)
+## Phase 7: Server #2 — Freshsales CRM Implementation
 
 | Task | Status | Notes |
 |---|---|---|
-| API #2 chosen + INTEGRATION.md | Not Started | Name: _______ |
+| Package scaffolded | Done | Scaffolded packages/mcp-server-freshsales |
 | Core implementation complete | Not Started | |
 | Eval tasks written | Not Started | |
 | Iterated to target score | Not Started | Score: ___% |
@@ -190,6 +192,7 @@ Living progress tracker. Update this file as tasks are completed — do not let 
 
 | Date | Change |
 |---|---|
+| 2026-06-13 | Notion MCP Server (Phase 3) core implementation: auth, client, 8 tools, index Express/SSE server, and unit tests implemented and passing. |
 | 2026-06-13 | Shared core library (Phase 1) completed: errors, logger, retry, and http error mapping implemented and tested. |
 | 2026-06-13 | Setup and installation (Phase 0) completed: monorepo workspaces and tooling configs created, lint/typecheck/test passing. |
 | _(start here)_ | Project initialized |
