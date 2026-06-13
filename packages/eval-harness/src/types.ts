@@ -12,14 +12,19 @@ export const TaskSchema = z.object({
   target_server: z.string(),
   max_steps: z.number().default(6),
   success_criteria: SuccessCriteriaSchema,
-  params: z.record(z.any()).optional(), // Contextual parameters for verifiers
+  params: z.record(z.unknown()).optional(), // Contextual parameters for verifiers
 });
 
 export type Task = z.infer<typeof TaskSchema>;
 
+export type MessageBlock =
+  | { type: "text"; text: string }
+  | { type: "tool_use"; id: string; name: string; input: Record<string, unknown> }
+  | { type: "tool_result"; tool_use_id: string; content: string | Array<{ type: "text"; text: string }>; is_error?: boolean };
+
 export interface ChatMessage {
   role: "user" | "assistant";
-  content: string | any[];
+  content: string | MessageBlock[];
 }
 
 export interface EvalResult {

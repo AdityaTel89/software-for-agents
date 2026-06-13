@@ -79,3 +79,10 @@ export interface MCPTool<T extends z.ZodObject<z.ZodRawShape>> {
   schema: T;
   handler: (args: z.infer<T>) => Promise<unknown>;
 }
+
+export interface AnyMCPTool {
+  name: string;
+  description: string;
+  schema: z.ZodObject<z.ZodRawShape>;
+  handler: (args: never) => Promise<unknown>;
+}

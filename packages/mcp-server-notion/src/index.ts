@@ -3,6 +3,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { createLogger, isToolError } from "@agentapi/core";
+import { z } from "zod";
 
 // Import all tools
 import { searchTool } from "./tools/search.js";
@@ -13,12 +14,11 @@ import { getBlockChildrenTool } from "./tools/getBlockChildren.js";
 import { appendBlockChildrenTool } from "./tools/appendBlockChildren.js";
 import { getDatabaseTool } from "./tools/getDatabase.js";
 import { queryDatabaseTool } from "./tools/queryDatabase.js";
-import { zodToMcpSchema, MCPTool } from "./tools/helpers.js";
+import { zodToMcpSchema, AnyMCPTool } from "./tools/helpers.js";
 
 const logger = createLogger("mcp-server-notion");
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const tools: MCPTool<any>[] = [
+const tools: AnyMCPTool[] = [
   searchTool,
   getPageTool,
   createPageTool,
@@ -80,7 +80,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   try {
     const parsedArgs = tool.schema.parse(args || {});
-    const result = await tool.handler(parsedArgs);
+    const result = await tool.handler(parsedArgs as never);
     return {
       content: [
         {

@@ -56,8 +56,9 @@ async function main() {
       }
       return parsed.data;
     });
-  } catch (err: any) {
-    console.error(`Failed to load or parse tasks file: ${err.message}`);
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    console.error(`Failed to load or parse tasks file: ${errMsg}`);
     process.exit(1);
   }
 
@@ -76,13 +77,14 @@ async function main() {
 
       console.log(`Result: ${isSuccess ? "✅ PASSED" : "❌ FAILED"} (${evalResult.steps_used} steps)\n`);
       results.push(evalResult);
-    } catch (err: any) {
-      console.error(`❌ Unexpected error running task ${task.task_id}:`, err.message || err);
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.error(`❌ Unexpected error running task ${task.task_id}:`, errMsg);
       results.push({
         task_id: task.task_id,
         success: false,
         steps_used: 0,
-        errors_encountered: [String(err.message || err)],
+        errors_encountered: [errMsg],
         transcript: [],
       });
     }

@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
-import { Task, EvalResult, ChatMessage } from "./types.js";
+import { Task, EvalResult, ChatMessage, MessageBlock } from "./types.js";
 
 export async function runEval(task: Task, serverUrl: string): Promise<EvalResult> {
   const transport = new SSEClientTransport(new URL(serverUrl));
@@ -36,7 +36,7 @@ export async function runEval(task: Task, serverUrl: string): Promise<EvalResult
     const anthropicTools = toolsResult.tools.map((tool) => ({
       name: tool.name,
       description: tool.description || "",
-      input_schema: tool.inputSchema as any,
+      input_schema: tool.inputSchema as { type: "object"; properties: Record<string, unknown>; required?: string[] },
     }));
 
     // 3. Interpolate environment variables in the description
@@ -66,19 +66,19 @@ export async function runEval(task: Task, serverUrl: string): Promise<EvalResult
           "You are a helpful assistant with access to tools. Perform the requested task. Be concise and precise. Follow all tool requirements exactly.",
         messages: transcript.map((msg) => ({
           role: msg.role,
-          content: msg.content as any,
+          content: msg.content as Anthropic.MessageParam["content"],
         })),
         tools: anthropicTools,
       });
 
       transcript.push({
         role: "assistant",
-        content: response.content as any,
+        content: response.content as unknown as MessageBlock[],
       });
 
       steps++;
 
-      const toolCalls = response.content.filter((block) => block.type === "tool_use");
+      const toolCalls = response.content.filter((block): block is Anthropic.ToolUseBlock => block.type === "tool_use");
       if (toolCalls.length === 0) {
         conversationEnded = true;
         break;
@@ -86,19 +86,19 @@ export async function runEval(task: Task, serverUrl: string): Promise<EvalResult
 
       // Execute tool calls via MCP client
       const toolResults = await Promise.all(
-        toolCalls.map(async (toolCall: any) => {
+        toolCalls.map(async (toolCall: Anthropic.ToolUseBlock) => {
           try {
             const result = await mcpClient.callTool({
               name: toolCall.name,
-              arguments: toolCall.input,
+              arguments: toolCall.input as Record<string, unknown>,
             });
             return {
               type: "tool_result" as const,
               tool_use_id: toolCall.id,
-              content: result.content as any,
+              content: result.content as Array<{ type: "text"; text: string }>,
             };
-          } catch (error: any) {
-            const errMsg = error.message || String(error);
+          } catch (error: unknown) {
+            const errMsg = error instanceof Error ? error.message : String(error);
             errors.push(`Tool execution error for '${toolCall.name}': ${errMsg}`);
             return {
               type: "tool_result" as const,
@@ -112,7 +112,7 @@ export async function runEval(task: Task, serverUrl: string): Promise<EvalResult
 
       transcript.push({
         role: "user",
-        content: toolResults as any,
+        content: toolResults as unknown as MessageBlock[],
       });
     }
 
