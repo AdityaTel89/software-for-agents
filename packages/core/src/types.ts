@@ -11,7 +11,7 @@ export interface ToolDefinition {
   name: string;
   description: string;
   inputSchema: {
-    type: "object";
+    type: 'object';
     properties: Record<string, JSONSchemaProperty>;
     required: string[];
   };

@@ -1,9 +1,11 @@
-import { z } from "zod";
-import { JSONSchemaProperty } from "@agentapi/core";
+import { z } from 'zod';
+import { JSONSchemaProperty } from '@agentapi/core';
 
-export function zodToMcpSchema(
-  zodSchema: z.ZodObject<z.ZodRawShape>
-): { type: "object"; properties: Record<string, JSONSchemaProperty>; required: string[] } {
+export function zodToMcpSchema(zodSchema: z.ZodObject<z.ZodRawShape>): {
+  type: 'object';
+  properties: Record<string, JSONSchemaProperty>;
+  required: string[];
+} {
   const properties: Record<string, JSONSchemaProperty> = {};
   const required: string[] = [];
 
@@ -22,36 +24,36 @@ export function zodToMcpSchema(
     }
 
     // Determine type and details
-    let typeName = "string";
+    let typeName = 'string';
     const desc = field.description || currentField.description || undefined;
     const extraProperties: Record<string, unknown> = {};
 
     if (currentField instanceof z.ZodString) {
-      typeName = "string";
+      typeName = 'string';
     } else if (currentField instanceof z.ZodNumber) {
-      typeName = "number";
+      typeName = 'number';
     } else if (currentField instanceof z.ZodBoolean) {
-      typeName = "boolean";
+      typeName = 'boolean';
     } else if (currentField instanceof z.ZodObject) {
-      typeName = "object";
+      typeName = 'object';
       const subSchema = zodToMcpSchema(currentField);
       extraProperties.properties = subSchema.properties;
       extraProperties.required = subSchema.required;
     } else if (currentField instanceof z.ZodArray) {
-      typeName = "array";
+      typeName = 'array';
       const itemType = currentField._def.type;
       if (itemType instanceof z.ZodObject) {
         const subSchema = zodToMcpSchema(itemType);
         extraProperties.items = {
-          type: "object",
+          type: 'object',
           properties: subSchema.properties,
-          required: subSchema.required
+          required: subSchema.required,
         };
       } else if (itemType instanceof z.ZodString) {
-        extraProperties.items = { type: "string" };
+        extraProperties.items = { type: 'string' };
       }
     } else if (currentField instanceof z.ZodEnum) {
-      typeName = "string";
+      typeName = 'string';
       extraProperties.enum = currentField._def.values;
     }
 
@@ -67,7 +69,7 @@ export function zodToMcpSchema(
   }
 
   return {
-    type: "object",
+    type: 'object',
     properties,
     required,
   };

@@ -1,8 +1,6 @@
 import { ToolError, ToolErrorCode } from './errors.js';
 
-export async function normalizeHttpError(
-  errorOrResponse: unknown
-): Promise<ToolError> {
+export async function normalizeHttpError(errorOrResponse: unknown): Promise<ToolError> {
   // If it's a Response object (or duck-typed equivalent) with a non-2xx status
   if (
     errorOrResponse &&
@@ -24,7 +22,10 @@ export async function normalizeHttpError(
           if (bodyJson.message) {
             message = bodyJson.message;
           } else if (bodyJson.error) {
-            message = typeof bodyJson.error === 'string' ? bodyJson.error : (bodyJson.error.message || message);
+            message =
+              typeof bodyJson.error === 'string'
+                ? bodyJson.error
+                : bodyJson.error.message || message;
           }
         } catch {
           details.body = bodyText;
@@ -82,7 +83,7 @@ export async function normalizeHttpError(
   // If it's a standard JS error or network error
   const error = errorOrResponse as Error;
   const message = error?.message || 'An unknown network or system error occurred';
-  
+
   return {
     error: true,
     code: ToolErrorCode.UPSTREAM_ERROR,

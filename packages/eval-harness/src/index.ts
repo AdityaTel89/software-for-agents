@@ -1,32 +1,32 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import dotenv from "dotenv";
-import { runEval } from "./runEval.js";
-import { verifyTask } from "./verify.js";
-import { scoreResult } from "./scoreResult.js";
-import { TaskSchema, Task, EvalResult } from "./types.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import { runEval } from './runEval.js';
+import { verifyTask } from './verify.js';
+import { scoreResult } from './scoreResult.js';
+import { TaskSchema, Task, EvalResult } from './types.js';
 
 // Load environment variables from monorepo root .env file
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, "../../../");
-dotenv.config({ path: path.join(rootDir, ".env") });
+const rootDir = path.resolve(__dirname, '../../../');
+dotenv.config({ path: path.join(rootDir, '.env') });
 
 async function main() {
   // Parse command line arguments
   const args = process.argv.slice(2);
-  const serverArg = args.find((arg) => arg.startsWith("--server="));
-  const urlArg = args.find((arg) => arg.startsWith("--url="));
+  const serverArg = args.find((arg) => arg.startsWith('--server='));
+  const urlArg = args.find((arg) => arg.startsWith('--url='));
 
   if (!serverArg) {
-    console.error("Error: --server=<name> argument is required.");
-    console.log("Usage: pnpm run eval --server=notion [--url=http://localhost:8080/sse]");
+    console.error('Error: --server=<name> argument is required.');
+    console.log('Usage: pnpm run eval --server=notion [--url=http://localhost:8080/sse]');
     process.exit(1);
   }
 
-  const serverName = serverArg.split("=")[1];
-  const serverUrl = urlArg ? urlArg.split("=")[1] : "http://localhost:8080/sse";
+  const serverName = serverArg.split('=')[1];
+  const serverUrl = urlArg ? urlArg.split('=')[1] : 'http://localhost:8080/sse';
 
   const tasksFilePath = path.join(__dirname, `../tasks/${serverName}-tasks.json`);
 
@@ -43,12 +43,12 @@ async function main() {
   // Load and parse tasks
   let tasks: Task[] = [];
   try {
-    const rawData = fs.readFileSync(tasksFilePath, "utf8");
+    const rawData = fs.readFileSync(tasksFilePath, 'utf8');
     const parsedData = JSON.parse(rawData);
     if (!Array.isArray(parsedData)) {
-      throw new Error("Tasks file must contain a JSON array.");
+      throw new Error('Tasks file must contain a JSON array.');
     }
-    
+
     tasks = parsedData.map((taskData, index) => {
       const parsed = TaskSchema.safeParse(taskData);
       if (!parsed.success) {
@@ -75,7 +75,9 @@ async function main() {
       const isSuccess = await verifyTask(task, evalResult);
       evalResult.success = isSuccess;
 
-      console.log(`Result: ${isSuccess ? "✅ PASSED" : "❌ FAILED"} (${evalResult.steps_used} steps)\n`);
+      console.log(
+        `Result: ${isSuccess ? '✅ PASSED' : '❌ FAILED'} (${evalResult.steps_used} steps)\n`,
+      );
       results.push(evalResult);
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : String(err);
@@ -102,7 +104,7 @@ async function main() {
   console.log(`Passed Tasks:  ${report.passed}`);
   console.log(`Success Rate:  ${(report.success_rate * 100).toFixed(1)}%`);
   console.log(`Avg Steps:     ${report.avg_steps_used.toFixed(1)}`);
-  
+
   if (report.common_failure_modes.length > 0) {
     console.log(`\nFailure Modes:`);
     report.common_failure_modes.forEach((fail) => {
@@ -112,7 +114,7 @@ async function main() {
   console.log(`==========================================\n`);
 
   // Write files to results directory
-  const resultsDir = path.join(__dirname, "../results");
+  const resultsDir = path.join(__dirname, '../results');
   if (!fs.existsSync(resultsDir)) {
     fs.mkdirSync(resultsDir, { recursive: true });
   }
@@ -120,14 +122,14 @@ async function main() {
   const reportPath = path.join(resultsDir, `${serverName}.json`);
   const detailsPath = path.join(resultsDir, `${serverName}-details.json`);
 
-  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf8");
-  fs.writeFileSync(detailsPath, JSON.stringify({ report, results }, null, 2), "utf8");
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), 'utf8');
+  fs.writeFileSync(detailsPath, JSON.stringify({ report, results }, null, 2), 'utf8');
 
   console.log(`Scoring report written to: ${reportPath}`);
   console.log(`Detailed transcripts written to: ${detailsPath}\n`);
 }
 
 main().catch((err) => {
-  console.error("Fatal error in eval runner:", err);
+  console.error('Fatal error in eval runner:', err);
   process.exit(1);
 });

@@ -1,9 +1,9 @@
-import { Task, EvalResult, ScoringReport } from "./types.js";
+import { Task, EvalResult, ScoringReport } from './types.js';
 
 export function scoreResult(
   serverName: string,
   tasks: Task[],
-  results: EvalResult[]
+  results: EvalResult[],
 ): ScoringReport {
   const total_tasks = results.length;
   const passedResults = results.filter((r) => r.success);
@@ -17,16 +17,14 @@ export function scoreResult(
 
   for (const r of results) {
     if (!r.success) {
-      let issue = "Unknown verification failure";
+      let issue = 'Unknown verification failure';
       if (r.errors_encountered.length > 0) {
-        issue = r.errors_encountered.join("; ");
+        issue = r.errors_encountered.join('; ');
       } else {
         // Retrieve last assistant message if any
-        const lastAssistantMsg = [...r.transcript]
-          .reverse()
-          .find((m) => m.role === "assistant");
+        const lastAssistantMsg = [...r.transcript].reverse().find((m) => m.role === 'assistant');
         if (lastAssistantMsg && Array.isArray(lastAssistantMsg.content)) {
-          const textBlock = lastAssistantMsg.content.find((b) => b.type === "text");
+          const textBlock = lastAssistantMsg.content.find((b) => b.type === 'text');
           if (textBlock && textBlock.text) {
             issue = `Failed verification. Last agent message: "${textBlock.text.substring(0, 100)}..."`;
           }
@@ -41,7 +39,7 @@ export function scoreResult(
 
   return {
     server: serverName,
-    run_date: new Date().toISOString().split("T")[0],
+    run_date: new Date().toISOString().split('T')[0],
     total_tasks,
     passed,
     success_rate,

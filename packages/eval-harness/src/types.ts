@@ -1,7 +1,7 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const SuccessCriteriaSchema = z.object({
-  type: z.enum(["tool_call_sequence_or_outcome", "outcome_only"]),
+  type: z.enum(['tool_call_sequence_or_outcome', 'outcome_only']),
   expected_tools_used: z.array(z.string()).optional(),
   verification: z.string(), // Name of verification handler
 });
@@ -18,12 +18,17 @@ export const TaskSchema = z.object({
 export type Task = z.infer<typeof TaskSchema>;
 
 export type MessageBlock =
-  | { type: "text"; text: string }
-  | { type: "tool_use"; id: string; name: string; input: Record<string, unknown> }
-  | { type: "tool_result"; tool_use_id: string; content: string | Array<{ type: "text"; text: string }>; is_error?: boolean };
+  | { type: 'text'; text: string }
+  | { type: 'tool_use'; id: string; name: string; input: Record<string, unknown> }
+  | {
+      type: 'tool_result';
+      tool_use_id: string;
+      content: string | Array<{ type: 'text'; text: string }>;
+      is_error?: boolean;
+    };
 
 export interface ChatMessage {
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string | MessageBlock[];
 }
 

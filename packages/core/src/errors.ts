@@ -21,7 +21,9 @@ export function isToolError(value: unknown): value is ToolError {
     'error' in value &&
     (value as Record<string, unknown>).error === true &&
     'code' in value &&
-    Object.values(ToolErrorCode).includes((value as Record<string, unknown>).code as ToolErrorCode) &&
+    Object.values(ToolErrorCode).includes(
+      (value as Record<string, unknown>).code as ToolErrorCode,
+    ) &&
     'message' in value &&
     'retryable' in value
   );
