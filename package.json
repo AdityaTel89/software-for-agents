@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit && pnpm -r --parallel exec tsc --noEmit",
     "test": "vitest run",
+    "eval": "pnpm --filter eval-harness run eval",
     "format": "prettier --write \"**/*.ts\""
   },
   "devDependencies": {

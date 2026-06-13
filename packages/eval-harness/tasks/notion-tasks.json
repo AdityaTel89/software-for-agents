@@ -1,0 +1,124 @@
+[
+  {
+    "task_id": "notion-create-page",
+    "description": "Create a new page in the database '{{NOTION_TEST_DATABASE_ID}}' with the title 'Eval Test Page' and set the Status to 'In Progress'. Verify you get a success response back.",
+    "target_server": "notion",
+    "max_steps": 6,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["create_page"],
+      "verification": "verify_page_creation"
+    },
+    "params": {
+      "expected_title": "Eval Test Page"
+    }
+  },
+  {
+    "task_id": "notion-search-pages",
+    "description": "Search for pages or databases containing the query 'Eval Test' in the Notion workspace and report if any are found.",
+    "target_server": "notion",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["search"],
+      "verification": "verify_outcome_only"
+    }
+  },
+  {
+    "task_id": "notion-append-paragraph",
+    "description": "Append a paragraph block with the text 'Review Q3 projections' to the parent page '{{NOTION_TEST_PAGE_ID}}' using the append blocks tool.",
+    "target_server": "notion",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["append_block_children"],
+      "verification": "verify_block_append"
+    },
+    "params": {
+      "expected_text": "Review Q3 projections"
+    }
+  },
+  {
+    "task_id": "notion-update-properties",
+    "description": "Update the page properties of page '{{NOTION_TEST_PAGE_ID}}' to set the 'Status' property to 'Completed'. If there is no select property Status, set the text property 'Priority' to 'Completed'. Make sure you update the properties correctly.",
+    "target_server": "notion",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["update_page_properties"],
+      "verification": "verify_properties_update"
+    },
+    "params": {
+      "property_name": "Status",
+      "property_value": "Completed"
+    }
+  },
+  {
+    "task_id": "notion-query-database",
+    "description": "Query the database '{{NOTION_TEST_DATABASE_ID}}' to retrieve all pages and output a summary of their titles.",
+    "target_server": "notion",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["query_database"],
+      "verification": "verify_outcome_only"
+    }
+  },
+  {
+    "task_id": "notion-get-page",
+    "description": "Retrieve the page details and metadata for the page '{{NOTION_TEST_PAGE_ID}}' and print out its title and URL.",
+    "target_server": "notion",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["get_page"],
+      "verification": "verify_outcome_only"
+    }
+  },
+  {
+    "task_id": "notion-get-block-children",
+    "description": "Get the children blocks of page '{{NOTION_TEST_PAGE_ID}}' and list out all the text block content.",
+    "target_server": "notion",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["get_block_children"],
+      "verification": "verify_outcome_only"
+    }
+  },
+  {
+    "task_id": "notion-create-subpage",
+    "description": "Create a new sub-page under parent page '{{NOTION_TEST_PAGE_ID}}' titled 'Project Roadmap'.",
+    "target_server": "notion",
+    "max_steps": 6,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["create_page"],
+      "verification": "verify_subpage_creation"
+    },
+    "params": {
+      "expected_title": "Project Roadmap"
+    }
+  },
+  {
+    "task_id": "notion-multi-step-summarize",
+    "description": "Find a page titled 'Eval Test Page' or 'Project Roadmap' in the workspace. Read its content blocks and summarize what it says.",
+    "target_server": "notion",
+    "max_steps": 6,
+    "success_criteria": {
+      "type": "outcome_only",
+      "verification": "verify_outcome_only"
+    }
+  },
+  {
+    "task_id": "notion-get-database",
+    "description": "Retrieve the database schema for database '{{NOTION_TEST_DATABASE_ID}}', check its properties, and list the name of the database.",
+    "target_server": "notion",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["get_database"],
+      "verification": "verify_outcome_only"
+    }
+  }
+]
