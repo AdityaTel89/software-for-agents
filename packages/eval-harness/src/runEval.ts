@@ -96,8 +96,11 @@ export async function runEval(task: Task, serverUrl: string): Promise<EvalResult
 
     // 4. Conversation loop
     while (steps < task.max_steps && !conversationEnded) {
+      // Proactive 4-second delay to guarantee we stay under the 15 RPM (1 request per 4s) Gemini Free Tier rate limit
+      await new Promise((resolve) => setTimeout(resolve, 4000));
+
       let response: Awaited<ReturnType<typeof ai.models.generateContent>> | null = null;
-      let retries = 5;
+      let retries = 8;
       let delayMs = 2000;
       while (retries > 0) {
         try {
