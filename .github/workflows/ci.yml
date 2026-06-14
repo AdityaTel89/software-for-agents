@@ -36,3 +36,20 @@ jobs:
 
     - name: Run unit tests
       run: pnpm run test
+
+  deploy-notion:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Flyctl
+      uses: superfly/flyctl-actions/setup-flyctl@master
+
+    - name: Deploy to Fly.io
+      run: flyctl deploy --config packages/mcp-server-notion/fly.toml --dockerfile packages/mcp-server-notion/Dockerfile
+      env:
+        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+

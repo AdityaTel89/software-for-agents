@@ -13,14 +13,14 @@ export function zodToMcpSchema(zodSchema: z.ZodObject<z.ZodRawShape>): {
   for (const key of Object.keys(shape)) {
     const field = shape[key];
     let isRequired = true;
-    let currentField = field;
+    let currentField: z.ZodTypeAny = field;
 
     // Handle optional fields
     if (currentField instanceof z.ZodOptional) {
       isRequired = false;
-      currentField = currentField._def.innerType;
+      currentField = currentField._def.innerType as z.ZodTypeAny;
     } else if (currentField instanceof z.ZodNullable) {
-      currentField = currentField._def.innerType;
+      currentField = currentField._def.innerType as z.ZodTypeAny;
     }
 
     // Determine type and details

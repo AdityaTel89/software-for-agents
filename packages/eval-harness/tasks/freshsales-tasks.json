@@ -1,0 +1,137 @@
+[
+  {
+    "task_id": "freshsales-create-contact",
+    "description": "Create a new contact with the last name 'Smith', first name 'Alice', and email 'alice.smith@example.com'. Verify you get a success response back.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["create_contact"],
+      "verification": "verify_freshsales_contact_creation"
+    },
+    "params": {
+      "expected_last_name": "Smith",
+      "expected_email": "alice.smith@example.com"
+    }
+  },
+  {
+    "task_id": "freshsales-get-contact",
+    "description": "Retrieve the details of the contact with ID '{{FRESHSALES_TEST_CONTACT_ID}}' and print out the contact's email.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["get_contact"],
+      "verification": "verify_outcome_only"
+    }
+  },
+  {
+    "task_id": "freshsales-list-contacts",
+    "description": "List CRM contacts and check if there are any contacts returned.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["list_contacts"],
+      "verification": "verify_outcome_only"
+    }
+  },
+  {
+    "task_id": "freshsales-update-contact",
+    "description": "Update the contact '{{FRESHSALES_TEST_CONTACT_ID}}' to set the mobile number to '+15550199'.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["update_contact"],
+      "verification": "verify_freshsales_contact_update"
+    },
+    "params": {
+      "contact_id": "{{FRESHSALES_TEST_CONTACT_ID}}",
+      "property_name": "mobile_number",
+      "property_value": "+15550199"
+    }
+  },
+  {
+    "task_id": "freshsales-delete-contact",
+    "description": "Delete the contact with ID '{{FRESHSALES_TEST_CONTACT_ID}}' and verify the operation succeeds.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["delete_contact"],
+      "verification": "verify_freshsales_contact_deletion"
+    },
+    "params": {
+      "contact_id": "{{FRESHSALES_TEST_CONTACT_ID}}"
+    }
+  },
+  {
+    "task_id": "freshsales-create-account",
+    "description": "Create a new sales account with the name 'Acme Industries' and website 'https://acme-industries.com'. Verify it succeeds.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["create_account"],
+      "verification": "verify_freshsales_account_creation"
+    },
+    "params": {
+      "expected_name": "Acme Industries",
+      "expected_website": "https://acme-industries.com"
+    }
+  },
+  {
+    "task_id": "freshsales-get-account",
+    "description": "Retrieve the details of the sales account with ID '{{FRESHSALES_TEST_ACCOUNT_ID}}' and print out its name.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["get_account"],
+      "verification": "verify_outcome_only"
+    }
+  },
+  {
+    "task_id": "freshsales-list-accounts",
+    "description": "List all sales accounts with a page size of 10 and print their names.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["list_accounts"],
+      "verification": "verify_outcome_only"
+    }
+  },
+  {
+    "task_id": "freshsales-update-account",
+    "description": "Update the sales account '{{FRESHSALES_TEST_ACCOUNT_ID}}' to set its phone number to '555-0100'.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["update_account"],
+      "verification": "verify_freshsales_account_update"
+    },
+    "params": {
+      "account_id": "{{FRESHSALES_TEST_ACCOUNT_ID}}",
+      "property_name": "phone",
+      "property_value": "555-0100"
+    }
+  },
+  {
+    "task_id": "freshsales-create-deal",
+    "description": "Create a new deal with the name 'Acme Enterprise License', amount 50000, and deal_stage_id 'New'. Verify it succeeds.",
+    "target_server": "freshsales",
+    "max_steps": 4,
+    "success_criteria": {
+      "type": "tool_call_sequence_or_outcome",
+      "expected_tools_used": ["create_deal"],
+      "verification": "verify_freshsales_deal_creation"
+    },
+    "params": {
+      "expected_name": "Acme Enterprise License",
+      "expected_amount": 50000
+    }
+  }
+]

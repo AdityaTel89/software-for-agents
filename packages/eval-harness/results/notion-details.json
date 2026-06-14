@@ -1,0 +1,144 @@
+{
+  "report": {
+    "server": "notion",
+    "run_date": "2026-06-14",
+    "total_tasks": 10,
+    "passed": 0,
+    "success_rate": 0,
+    "avg_steps_used": 0,
+    "common_failure_modes": [
+      {
+        "task_id": "notion-create-page",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jV63VuNu2mBQwMzMqZ\"}"
+      },
+      {
+        "task_id": "notion-search-pages",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jV7PMz2AuTMxtwJQci\"}"
+      },
+      {
+        "task_id": "notion-append-paragraph",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jV8pSER4dgpWKWEkfJ\"}"
+      },
+      {
+        "task_id": "notion-update-properties",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVA4LxJk23DoAF9hfa\"}"
+      },
+      {
+        "task_id": "notion-query-database",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVBGXNsGWE2RwweWdJ\"}"
+      },
+      {
+        "task_id": "notion-get-page",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVCUCivmVEhvaBbHQd\"}"
+      },
+      {
+        "task_id": "notion-get-block-children",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVDhNMMMXho9m5BRi8\"}"
+      },
+      {
+        "task_id": "notion-create-subpage",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVEt4QJ1V4tScrXHFc\"}"
+      },
+      {
+        "task_id": "notion-multi-step-summarize",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVG6EfvGt4nUXs7e2R\"}"
+      },
+      {
+        "task_id": "notion-get-database",
+        "issue": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVHHv2TkmCKhcSZbXd\"}"
+      }
+    ]
+  },
+  "results": [
+    {
+      "task_id": "notion-create-page",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jV63VuNu2mBQwMzMqZ\"}"
+      ],
+      "transcript": []
+    },
+    {
+      "task_id": "notion-search-pages",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jV7PMz2AuTMxtwJQci\"}"
+      ],
+      "transcript": []
+    },
+    {
+      "task_id": "notion-append-paragraph",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jV8pSER4dgpWKWEkfJ\"}"
+      ],
+      "transcript": []
+    },
+    {
+      "task_id": "notion-update-properties",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVA4LxJk23DoAF9hfa\"}"
+      ],
+      "transcript": []
+    },
+    {
+      "task_id": "notion-query-database",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVBGXNsGWE2RwweWdJ\"}"
+      ],
+      "transcript": []
+    },
+    {
+      "task_id": "notion-get-page",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVCUCivmVEhvaBbHQd\"}"
+      ],
+      "transcript": []
+    },
+    {
+      "task_id": "notion-get-block-children",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVDhNMMMXho9m5BRi8\"}"
+      ],
+      "transcript": []
+    },
+    {
+      "task_id": "notion-create-subpage",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVEt4QJ1V4tScrXHFc\"}"
+      ],
+      "transcript": []
+    },
+    {
+      "task_id": "notion-multi-step-summarize",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVG6EfvGt4nUXs7e2R\"}"
+      ],
+      "transcript": []
+    },
+    {
+      "task_id": "notion-get-database",
+      "success": false,
+      "steps_used": 0,
+      "errors_encountered": [
+        "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011Cc2jVHHv2TkmCKhcSZbXd\"}"
+      ],
+      "transcript": []
+    }
+  ]
+}

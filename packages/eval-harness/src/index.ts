@@ -2,6 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import { EventSource } from 'eventsource';
+Reflect.set(globalThis, 'EventSource', EventSource);
+
+
 import { runEval } from './runEval.js';
 import { verifyTask } from './verify.js';
 import { scoreResult } from './scoreResult.js';

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { getPage, NotionPage } from '../client.js';
+import { getPage, NotionPage, NotionRichText } from '../client.js';
 import { MCPTool } from './helpers.js';
 
 const getPageSchema = z.object({
@@ -18,11 +18,11 @@ export const getPageTool: MCPTool<typeof getPageSchema> = {
   handler: async (args) => {
     const res: NotionPage = await getPage(args.page_id);
 
-    // Extract page title for ease of reading
+    // Extract page title dynamically by looking for property of type 'title'
     let title = 'Untitled';
-    const titleProp = res.properties['title'] || res.properties['Name'];
+    const titleProp = Object.values(res.properties).find((prop) => prop && prop.type === 'title');
     if (titleProp && titleProp.title && Array.isArray(titleProp.title)) {
-      title = titleProp.title.map((t) => t.plain_text).join('') || 'Untitled';
+      title = titleProp.title.map((t: NotionRichText) => t.plain_text).join('') || 'Untitled';
     }
 
     return {

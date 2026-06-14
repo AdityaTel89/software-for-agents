@@ -61,6 +61,43 @@ async function notionRequest<T>(path: string, options: RequestInit = {}): Promis
   return res.json() as Promise<T>;
 }
 
+function getFreshsalesAuthHeaders(): Record<string, string> {
+  const apiKey = process.env.FRESHSALES_API_KEY || process.env.TARGET_API_KEY;
+  if (!apiKey) {
+    throw new Error('FRESHSALES_API_KEY or TARGET_API_KEY environment variable is not set');
+  }
+  return {
+    Authorization: `Token token=${apiKey}`,
+    'Content-Type': 'application/json',
+  };
+}
+
+function getFreshsalesBaseUrl(): string {
+  const domain = process.env.FRESHSALES_DOMAIN || process.env.TARGET_API_DOMAIN;
+  if (!domain) {
+    throw new Error('FRESHSALES_DOMAIN or TARGET_API_DOMAIN environment variable is not set');
+  }
+  return `https://${domain}.freshsales.io/api`;
+}
+
+async function freshsalesRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const baseUrl = getFreshsalesBaseUrl();
+  const url = `${baseUrl}${path}`;
+  const headers = {
+    ...getFreshsalesAuthHeaders(),
+    ...options.headers,
+  };
+  const res = await fetch(url, { ...options, headers });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Freshsales API request to ${path} failed with status ${res.status}: ${errText}`);
+  }
+  if (options.method === 'DELETE') {
+    return {} as T;
+  }
+  return res.json() as Promise<T>;
+}
+
 // Extraction helpers for Notion property types
 function getPropertyValueAsString(property: NotionProperty): string {
   if (!property) return '';
@@ -228,6 +265,129 @@ export async function verifyTask(task: Task, evalResult: EvalResult): Promise<bo
             method: 'PATCH',
             body: JSON.stringify({ archived: true }),
           });
+          return true;
+        }
+        return false;
+      }
+
+      case 'verify_freshsales_contact_creation': {
+        const expectedLastName = params.expected_last_name as string | undefined;
+        const expectedEmail = params.expected_email as string | undefined;
+        if (!expectedLastName) {
+          throw new Error('expected_last_name missing for verify_freshsales_contact_creation');
+        }
+
+        const response = await freshsalesRequest<{ contacts: Array<{ id: string; last_name: string; email?: string; created_at?: string }> }>('/contacts');
+        const createdContact = response.contacts?.find((c) => {
+          const nameMatch = c.last_name.toLowerCase() === expectedLastName.toLowerCase();
+          const emailMatch = !expectedEmail || c.email?.toLowerCase() === expectedEmail.toLowerCase();
+          const createdAtTime = c.created_at ? new Date(c.created_at).getTime() : 0;
+          const fiveMinsAgo = Date.now() - 5 * 60 * 1000;
+          return nameMatch && emailMatch && createdAtTime > fiveMinsAgo;
+        });
+
+        if (createdContact) {
+          await freshsalesRequest<void>(`/contacts/${createdContact.id}`, {
+            method: 'DELETE',
+          });
+          return true;
+        }
+        return false;
+      }
+
+      case 'verify_freshsales_contact_update': {
+        const contactId = (process.env.FRESHSALES_TEST_CONTACT_ID || params.contact_id) as string | undefined;
+        const expectedPropName = params.property_name as string | undefined;
+        const expectedPropValue = params.property_value as string | undefined;
+        if (!contactId || !expectedPropName || !expectedPropValue) {
+          throw new Error('contact_id, property_name, or property_value missing');
+        }
+
+        const response = await freshsalesRequest<{ contact: Record<string, unknown> }>(`/contacts/${contactId}`);
+        const val = response.contact?.[expectedPropName];
+        return String(val).toLowerCase() === expectedPropValue.toLowerCase();
+      }
+
+      case 'verify_freshsales_contact_deletion': {
+        const contactId = (process.env.FRESHSALES_TEST_CONTACT_ID || params.contact_id) as string | undefined;
+        if (!contactId) {
+          throw new Error('contact_id missing for verify_freshsales_contact_deletion');
+        }
+
+        try {
+          await freshsalesRequest<{ contact: unknown }>(`/contacts/${contactId}`);
+          return false;
+        } catch {
+          return true;
+        }
+      }
+
+      case 'verify_freshsales_account_creation': {
+        const expectedName = params.expected_name as string | undefined;
+        const expectedWebsite = params.expected_website as string | undefined;
+        if (!expectedName) {
+          throw new Error('expected_name missing for verify_freshsales_account_creation');
+        }
+
+        const response = await freshsalesRequest<{ sales_accounts: Array<{ id: string; name: string; website?: string; created_at?: string }> }>('/sales_accounts');
+        const createdAccount = response.sales_accounts?.find((a) => {
+          const nameMatch = a.name.toLowerCase() === expectedName.toLowerCase();
+          const websiteMatch = !expectedWebsite || a.website?.toLowerCase() === expectedWebsite.toLowerCase();
+          const createdAtTime = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const fiveMinsAgo = Date.now() - 5 * 60 * 1000;
+          return nameMatch && websiteMatch && createdAtTime > fiveMinsAgo;
+        });
+
+        if (createdAccount) {
+          try {
+            await freshsalesRequest<void>(`/sales_accounts/${createdAccount.id}`, {
+              method: 'DELETE',
+            });
+          } catch {
+            // ignore
+          }
+          return true;
+        }
+        return false;
+      }
+
+      case 'verify_freshsales_account_update': {
+        const accountId = (process.env.FRESHSALES_TEST_ACCOUNT_ID || params.account_id) as string | undefined;
+        const expectedPropName = params.property_name as string | undefined;
+        const expectedPropValue = params.property_value as string | undefined;
+        if (!accountId || !expectedPropName || !expectedPropValue) {
+          throw new Error('account_id, property_name, or property_value missing');
+        }
+
+        const response = await freshsalesRequest<{ sales_account: Record<string, unknown> }>(`/sales_accounts/${accountId}`);
+        const val = response.sales_account?.[expectedPropName];
+        return String(val).toLowerCase() === expectedPropValue.toLowerCase();
+      }
+
+      case 'verify_freshsales_deal_creation': {
+        const expectedName = params.expected_name as string | undefined;
+        const expectedAmount = params.expected_amount as number | undefined;
+        if (!expectedName) {
+          throw new Error('expected_name missing for verify_freshsales_deal_creation');
+        }
+
+        const response = await freshsalesRequest<{ deals: Array<{ id: string; name: string; amount?: string | number; created_at?: string }> }>('/deals');
+        const createdDeal = response.deals?.find((d) => {
+          const nameMatch = d.name.toLowerCase() === expectedName.toLowerCase();
+          const amountMatch = expectedAmount === undefined || Number(d.amount) === expectedAmount;
+          const createdAtTime = d.created_at ? new Date(d.created_at).getTime() : 0;
+          const fiveMinsAgo = Date.now() - 5 * 60 * 1000;
+          return nameMatch && amountMatch && createdAtTime > fiveMinsAgo;
+        });
+
+        if (createdDeal) {
+          try {
+            await freshsalesRequest<void>(`/deals/${createdDeal.id}`, {
+              method: 'DELETE',
+            });
+          } catch {
+            // ignore
+          }
           return true;
         }
         return false;

@@ -12,9 +12,11 @@
     "@anthropic-ai/sdk": "^0.22.0",
     "@modelcontextprotocol/sdk": "^0.6.0",
     "dotenv": "^16.4.5",
+    "eventsource": "^4.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/eventsource": "^3.0.0",
     "@types/node": "^20.11.0",
     "typescript": "^5.4.5"
   }

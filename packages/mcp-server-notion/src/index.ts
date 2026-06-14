@@ -3,6 +3,15 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { createLogger, isToolError } from '@agentapi/core';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { z } from 'zod';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 // Import all tools
 import { searchTool } from './tools/search.js';
@@ -98,6 +107,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           {
             type: 'text',
             text: JSON.stringify(error),
+          },
+        ],
+        isError: true,
+      };
+    }
+
+    // Handle Zod Schema validation errors cleanly for the agent
+    if (error instanceof z.ZodError) {
+      const issues = error.issues
+        ? error.issues.map((iss: z.ZodIssue) => `${iss.path.join('.') || 'root'}: ${iss.message}`).join(', ')
+        : 'Invalid arguments';
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              error: true,
+              code: 'VALIDATION_ERROR',
+              message: `Arguments validation failed: ${issues}`,
+              retryable: false,
+              details: error.format ? error.format() : error,
+            }),
           },
         ],
         isError: true,

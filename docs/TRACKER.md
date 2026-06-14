@@ -92,12 +92,12 @@ Living progress tracker. Update this file as tasks are completed — do not let 
 
 | Task | Status | Notes |
 |---|---|---|
-| Initial eval run completed | Not Started | First score: ___% |
-| Failure modes classified | Not Started | |
-| Fixes applied (descriptions/schemas/errors) | Not Started | Track iteration count: ___ |
-| Re-run(s) completed | Not Started | Latest score: ___% |
-| Before/after examples documented | Not Started | |
-| **Exit criteria: score ≥ 85% or documented plateau** | Not Started | |
+| Initial eval run completed | Done | First score: 0% (EventSource missing polyfill resolved) |
+| Failure modes classified | Done | Identified dynamic titles, block formatting, and Zod error formatting needs |
+| Fixes applied (descriptions/schemas/errors) | Done | Updated getPage, search, createPage, getBlockChildren, and index error formats |
+| Re-run(s) completed | Done | Latest score: 100% (Mock Mode) |
+| Before/after examples documented | Done | Documented in walkthrough.md |
+| **Exit criteria: score ≥ 85% or documented plateau** | Done | Mock evaluation harness score: 100%, unit tests passing |
 
 ---
 
@@ -105,13 +105,13 @@ Living progress tracker. Update this file as tasks are completed — do not let 
 
 | Task | Status | Notes |
 |---|---|---|
-| `Dockerfile` written | Not Started | |
+| `Dockerfile` written | Done | 2026-06-14: Created Dockerfile for mcp-server-notion |
 | Fly.io app created | Not Started | App name: _______ |
 | Secrets configured | Not Started | |
 | Deployed, `/health` returns 200 | Not Started | URL: _______ |
 | Eval re-run against deployed URL | Not Started | Score: ___% |
-| CI auto-deploy configured | Not Started | |
-| **Exit criteria: deployed eval results match local** | Not Started | |
+| CI auto-deploy configured | Done | 2026-06-14: Configured deploy job in CI workflow |
+| **Exit criteria: deployed eval results match local** | In Progress | Dockerfile and CI setup completed, pending user deployment |
 
 ---
 
@@ -120,11 +120,11 @@ Living progress tracker. Update this file as tasks are completed — do not let 
 | Task | Status | Notes |
 |---|---|---|
 | Package scaffolded | Done | Scaffolded packages/mcp-server-freshsales |
-| Core implementation complete | Not Started | |
-| Eval tasks written | Not Started | |
+| Core implementation complete | Done | 2026-06-14: Implemented auth, client, index server, and all 15 tools |
+| Eval tasks written | Done | 2026-06-14: Created freshsales-tasks.json and updated verifier handlers |
 | Iterated to target score | Not Started | Score: ___% |
 | Deployed | Not Started | URL: _______ |
-| **Exit criteria: server #2 live and scored** | Not Started | |
+| **Exit criteria: server #2 live and scored** | In Progress | Core code, tests, and tasks implemented, pending live credentials for eval runs |
 
 ### Server #3 (optional)
 
@@ -192,6 +192,8 @@ Living progress tracker. Update this file as tasks are completed — do not let 
 
 | Date | Change |
 |---|---|
+| 2026-06-14 | Completed Phase 6 Notion Dockerfile and CI/CD deploy configuration, and Phase 7 Freshsales CRM MCP Server core implementation (auth, client, 15 tools, index.ts), unit tests, evaluation tasks, and verify.ts verifier integrations. |
+| 2026-06-14 | Notion Server Iteration (Phase 5) completed: implemented dynamic title resolution, Zod validation error formatting, string-to-parent union type mapping, and markdown block formatting. Verified with mock evaluations and unit tests passing clean. |
 | 2026-06-13 | Notion Eval Harness (Phase 4) implemented: package scaffolded, types, runEval, verify, scoreResult, index and 10 Notion task definitions completed. |
 | 2026-06-13 | Notion MCP Server (Phase 3) core implementation: auth, client, 8 tools, index Express/SSE server, and unit tests implemented and passing. |
 | 2026-06-13 | Shared core library (Phase 1) completed: errors, logger, retry, and http error mapping implemented and tested. |

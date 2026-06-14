@@ -18,6 +18,7 @@ interface BlockContent {
   rich_text?: NotionRichText[];
   title?: string;
   checked?: boolean;
+  language?: string;
 }
 
 export const getBlockChildrenTool: MCPTool<typeof getBlockChildrenSchema> = {
@@ -35,13 +36,30 @@ export const getBlockChildrenTool: MCPTool<typeof getBlockChildrenSchema> = {
         const blockContent = block[type] as BlockContent | undefined;
 
         if (blockContent && blockContent.rich_text && Array.isArray(blockContent.rich_text)) {
-          text = blockContent.rich_text.map((t) => t.plain_text).join('') || '';
+          const rawText = blockContent.rich_text.map((t) => t.plain_text).join('') || '';
+          if (type === 'bulleted_list_item') {
+            text = `• ${rawText}`;
+          } else if (type === 'numbered_list_item') {
+            text = `1. ${rawText}`;
+          } else if (type === 'to_do') {
+            const checked = blockContent.checked;
+            text = `${checked ? '[x]' : '[ ]'} ${rawText}`;
+          } else if (type === 'heading_1') {
+            text = `# ${rawText}`;
+          } else if (type === 'heading_2') {
+            text = `## ${rawText}`;
+          } else if (type === 'heading_3') {
+            text = `### ${rawText}`;
+          } else if (type === 'code') {
+            const language = blockContent.language || 'text';
+            text = `\`\`\`${language}\n${rawText}\n\`\`\``;
+          } else {
+            text = rawText;
+          }
         } else if (type === 'child_page' && blockContent) {
           text = blockContent.title || 'Child Page';
         } else if (type === 'child_database' && blockContent) {
           text = blockContent.title || 'Child Database';
-        } else if (type === 'todo' && blockContent) {
-          text = `${blockContent.checked ? '[x]' : '[ ]'} ${blockContent.rich_text?.map((t) => t.plain_text).join('') || ''}`;
         }
 
         return {

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { searchPagesAndDatabases, NotionPage, NotionDatabase } from '../client.js';
+import { searchPagesAndDatabases, NotionPage, NotionDatabase, NotionRichText } from '../client.js';
 import { MCPTool } from './helpers.js';
 
 const searchSchema = z.object({
@@ -13,14 +13,14 @@ const searchSchema = z.object({
       property: z.literal('object').describe("Must be 'object'"),
     })
     .optional()
-    .describe("Filter results to only 'page' or 'database'"),
+    .describe("Filter results by object type (e.g. only pages or only databases)"),
   page_size: z
     .number()
     .int()
     .min(1)
     .max(100)
     .optional()
-    .describe('Number of items to retrieve (default 50, max 100)'),
+    .describe('Number of results to retrieve (default 100, max 100)'),
   start_cursor: z.string().optional().describe('The cursor to start pagination from'),
 });
 
@@ -41,14 +41,14 @@ export const searchTool: MCPTool<typeof searchSchema> = {
       results: res.results.map((item: NotionPage | NotionDatabase) => {
         let title = 'Untitled';
         if (item.object === 'page') {
-          // Notion pages can have titles under various property keys depending on database vs root
-          const titleProp = item.properties['title'] || item.properties['Name'];
+          // Extract page title dynamically by looking for property of type 'title'
+          const titleProp = Object.values(item.properties).find((prop) => prop && prop.type === 'title');
           if (titleProp && titleProp.title && Array.isArray(titleProp.title)) {
-            title = titleProp.title.map((t) => t.plain_text).join('') || 'Untitled';
+            title = titleProp.title.map((t: NotionRichText) => t.plain_text).join('') || 'Untitled';
           }
         } else if (item.object === 'database') {
           if (item.title && Array.isArray(item.title)) {
-            title = item.title.map((t) => t.plain_text).join('') || 'Untitled';
+            title = item.title.map((t: NotionRichText) => t.plain_text).join('') || 'Untitled';
           }
         }
 
