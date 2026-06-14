@@ -94,6 +94,9 @@ async function main() {
         transcript: [],
       });
     }
+
+    // Delay between tasks to avoid hitting rate limits
+    await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
   // 3. Score the results

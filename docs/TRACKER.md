@@ -142,14 +142,14 @@ Living progress tracker. Update this file as tasks are completed — do not let 
 
 | Task | Status | Notes |
 |---|---|---|
-| `landing-page` scaffolded (Next.js + Tailwind + MDX) | Not Started | |
-| Home page (server cards from results JSON) | Not Started | |
-| Server Detail page template | Not Started | |
-| "How It Works" page | Not Started | |
-| Eval write-up #1 published | Not Started | |
-| Eval write-up #2 published (if server #2 done) | Not Started | |
+| `landing-page` scaffolded (Next.js + Tailwind + MDX) | Done | Scaffolded Next.js, Tailwind v4, TypeScript, and shadcn-ui project structure |
+| Home page (server cards from results JSON) | Done | Built brutalist monochrome cards rendering data from notion.json |
+| Server Detail page template | Done | Dynamic route `/servers/[slug]` displaying tool schemas and connect guides |
+| "How It Works" page | Done | Technical methodology page explaining vibe-to-verify gap and eval loops |
+| Eval write-up #1 published | Done | Notion iteration case study published at `/blog/notion-iteration` |
+| Eval write-up #2 published (if server #2 done) | Not Started | (Pending Freshsales eval runs) |
 | Deployed to Vercel + custom domain | Not Started | Domain: _______ |
-| **Exit criteria: 5-minute "discover → connect" manually verified** | Not Started | |
+| **Exit criteria: 5-minute "discover → connect" manually verified** | In Progress | All pages functional and compiling cleanly locally |
 
 ---
 
