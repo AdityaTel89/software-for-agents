@@ -3,17 +3,13 @@
     "server": "notion",
     "run_date": "2026-06-15",
     "total_tasks": 3,
-    "passed": 1,
-    "success_rate": 0.3333333333333333,
-    "avg_steps_used": 2,
+    "passed": 2,
+    "success_rate": 0.6666666666666666,
+    "avg_steps_used": 2.3333333333333335,
     "common_failure_modes": [
       {
         "task_id": "notion-create-page",
-        "issue": "Failed verification. Last agent message: \"My apologies again, it seems I made a mistake with the `parent` argument's format as well. It should...\""
-      },
-      {
-        "task_id": "notion-append-paragraph",
-        "issue": "Unknown verification failure"
+        "issue": "Failed verification. Last agent message: \"I was unable to set the 'Status' property because the database schema does not include a property na...\""
       }
     ]
   },
@@ -26,7 +22,7 @@
       "transcript": [
         {
           "role": "user",
-          "content": "Create a new page in the database '37fc44f0fc9d80cc8049c24e7de4b4e8' with the title 'Eval Test Page' and set the Status to 'In Progress'. Verify you get a success response back."
+          "content": "Create a new page in the database '380c44f0fc9d801fbd99fa9cceed0c44' with the title 'Eval Test Page' and set the Status to 'In Progress'. Verify you get a success response back."
         },
         {
           "role": "assistant",
@@ -36,8 +32,25 @@
               "id": "create_page_1_0",
               "name": "create_page",
               "input": {
-                "parent": "{ \"database_id\": \"37fc44f0fc9d80cc8049c24e7de4b4e8\" }",
-                "properties": "{ \"Name\": { \"title\": [ { \"text\": { \"content\": \"Eval Test Page\" } } ] }, \"Status\": { \"status\": { \"name\": \"In Progress\" } } }"
+                "properties": {
+                  "Status": {
+                    "status": {
+                      "name": "In Progress"
+                    }
+                  },
+                  "Name": {
+                    "title": [
+                      {
+                        "text": {
+                          "content": "Eval Test Page"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "parent": {
+                  "database_id": "380c44f0fc9d801fbd99fa9cceed0c44"
+                }
               }
             }
           ]
@@ -51,7 +64,35 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "{\"error\":true,\"code\":\"VALIDATION_ERROR\",\"message\":\"Arguments validation failed: properties: Expected object, received string\",\"retryable\":false,\"details\":{\"_errors\":[],\"properties\":{\"_errors\":[\"Expected object, received string\"]}}}"
+                  "text": "{\"error\":true,\"code\":\"VALIDATION_ERROR\",\"message\":\"Status is not a property that exists.\",\"retryable\":false,\"details\":{\"status\":400,\"body\":{\"object\":\"error\",\"status\":400,\"code\":\"validation_error\",\"message\":\"Status is not a property that exists.\",\"request_id\":\"e135f6ae-3d53-48df-ad9b-6858d3f55528\"}}}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "get_database_2_0",
+              "name": "get_database",
+              "input": {
+                "database_id": "380c44f0fc9d801fbd99fa9cceed0c44"
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "tool_result",
+              "tool_use_id": "get_database_2_0",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\n  \"id\": \"380c44f0-fc9d-801f-bd99-fa9cceed0c44\",\n  \"title\": \"My-Database\",\n  \"properties\": {\n    \"Name\": {\n      \"id\": \"title\",\n      \"name\": \"Name\",\n      \"description\": null,\n      \"type\": \"title\",\n      \"title\": {}\n    }\n  },\n  \"url\": \"https://app.notion.com/p/380c44f0fc9d801fbd99fa9cceed0c44\"\n}"
                 }
               ]
             }
@@ -62,96 +103,7 @@
           "content": [
             {
               "type": "text",
-              "text": "I apologize, it seems there was an error in the format of the `properties` argument. Let me correct that and try again."
-            },
-            {
-              "type": "tool_use",
-              "id": "create_page_2_0",
-              "name": "create_page",
-              "input": {
-                "parent": "{ \"database_id\": \"37fc44f0fc9d80cc8049c24e7de4b4e8\" }",
-                "properties": {
-                  "Status": {
-                    "status": {
-                      "name": "In Progress"
-                    }
-                  },
-                  "Name": {
-                    "title": [
-                      {
-                        "text": {
-                          "content": "Eval Test Page"
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "role": "user",
-          "content": [
-            {
-              "type": "tool_result",
-              "tool_use_id": "create_page_2_0",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "{\"error\":true,\"code\":\"VALIDATION_ERROR\",\"message\":\"body failed validation. Fix one:\\nbody.parent.page_id should be defined, instead was `undefined`.\\nbody.parent.database_id should be a valid uuid, instead was `\\\"{ \\\\\\\"database_id\\\\\\\": \\\\\\\"37fc44f0fc9d80cc8049c24e7de4b4e8\\\\...`.\\nbody.parent.data_source_id should be defined, instead was `undefined`.\\nbody.parent.workspace should be defined, instead was `undefined`.\",\"retryable\":false,\"details\":{\"status\":400,\"body\":{\"object\":\"error\",\"status\":400,\"code\":\"validation_error\",\"message\":\"body failed validation. Fix one:\\nbody.parent.page_id should be defined, instead was `undefined`.\\nbody.parent.database_id should be a valid uuid, instead was `\\\"{ \\\\\\\"database_id\\\\\\\": \\\\\\\"37fc44f0fc9d80cc8049c24e7de4b4e8\\\\...`.\\nbody.parent.data_source_id should be defined, instead was `undefined`.\\nbody.parent.workspace should be defined, instead was `undefined`.\",\"request_id\":\"3d0179f0-9266-4e47-9d22-5814cda94126\"}}}"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "role": "assistant",
-          "content": [
-            {
-              "type": "text",
-              "text": "My apologies again, it seems I made a mistake with the `parent` argument's format as well. It should be a dictionary with the `database_id` directly, not a JSON string. I will correct this and try one more time."
-            },
-            {
-              "type": "tool_use",
-              "id": "create_page_3_0",
-              "name": "create_page",
-              "input": {
-                "parent": {
-                  "database_id": "37fc44f0fc9d80cc8049c24e7de4b4e8"
-                },
-                "properties": {
-                  "Status": {
-                    "status": {
-                      "name": "In Progress"
-                    }
-                  },
-                  "Name": {
-                    "title": [
-                      {
-                        "text": {
-                          "content": "Eval Test Page"
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "role": "user",
-          "content": [
-            {
-              "type": "tool_result",
-              "tool_use_id": "create_page_3_0",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "{\"error\":true,\"code\":\"VALIDATION_ERROR\",\"message\":\"Provided database_id 37fc44f0-fc9d-80cc-8049-c24e7de4b4e8 is a page, not a database. Use the pages API instead, or pass the ID of the database itself.\",\"retryable\":false,\"details\":{\"status\":400,\"body\":{\"object\":\"error\",\"status\":400,\"code\":\"validation_error\",\"message\":\"Provided database_id 37fc44f0-fc9d-80cc-8049-c24e7de4b4e8 is a page, not a database. Use the pages API instead, or pass the ID of the database itself.\",\"request_id\":\"a01b1f00-565f-4825-b351-11e9d5906e78\"}}}"
-                }
-              ]
+              "text": "I was unable to set the 'Status' property because the database schema does not include a property named 'Status'. I can create the page with just the title 'Eval Test Page'. Would you like me to proceed?"
             }
           ]
         }
@@ -200,7 +152,7 @@
           "content": [
             {
               "type": "text",
-              "text": "No pages or databases containing the query 'Eval Test' were found."
+              "text": "No pages or databases containing 'Eval Test' were found."
             }
           ]
         }
@@ -208,17 +160,66 @@
     },
     {
       "task_id": "notion-append-paragraph",
-      "success": false,
-      "steps_used": 1,
+      "success": true,
+      "steps_used": 2,
       "errors_encountered": [],
       "transcript": [
         {
           "role": "user",
-          "content": "Append a paragraph block with the text 'Review Q3 projections' to the parent page '37fc44f0fc9d80cc8049c24e7de4b4e8' using the append blocks tool."
+          "content": "Append a paragraph block with the text 'Review Q3 projections' to the parent page '380c44f0fc9d806688f9d48ee5d8c50b' using the append blocks tool."
         },
         {
           "role": "assistant",
-          "content": []
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "append_block_children_1_0",
+              "name": "append_block_children",
+              "input": {
+                "block_id": "380c44f0fc9d806688f9d48ee5d8c50b",
+                "children": [
+                  {
+                    "paragraph": {
+                      "rich_text": [
+                        {
+                          "text": {
+                            "content": "Review Q3 projections"
+                          },
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "object": "block",
+                    "type": "paragraph"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "tool_result",
+              "tool_use_id": "append_block_children_1_0",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\n  \"results\": [\n    {\n      \"id\": \"380c44f0-fc9d-811b-b6f0-f5af7c4a12c8\",\n      \"type\": \"paragraph\"\n    }\n  ]\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully appended the paragraph block to the page."
+            }
+          ]
         }
       ]
     }

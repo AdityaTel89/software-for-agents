@@ -2,17 +2,13 @@
   "server": "notion",
   "run_date": "2026-06-15",
   "total_tasks": 3,
-  "passed": 1,
-  "success_rate": 0.3333333333333333,
-  "avg_steps_used": 2,
+  "passed": 2,
+  "success_rate": 0.6666666666666666,
+  "avg_steps_used": 2.3333333333333335,
   "common_failure_modes": [
     {
       "task_id": "notion-create-page",
-      "issue": "Failed verification. Last agent message: \"My apologies again, it seems I made a mistake with the `parent` argument's format as well. It should...\""
-    },
-    {
-      "task_id": "notion-append-paragraph",
-      "issue": "Unknown verification failure"
+      "issue": "Failed verification. Last agent message: \"I was unable to set the 'Status' property because the database schema does not include a property na...\""
     }
   ]
 }
