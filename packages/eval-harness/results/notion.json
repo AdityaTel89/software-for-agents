@@ -1,8 +1,8 @@
 {
   "server": "notion",
   "run_date": "2026-06-14",
-  "total_tasks": 10,
-  "passed": 10,
+  "total_tasks": 3,
+  "passed": 3,
   "success_rate": 100,
   "avg_steps_used": 3.2,
   "common_failure_modes": []
