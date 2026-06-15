@@ -100,7 +100,7 @@ export async function runEval(task: Task, serverUrl: string): Promise<EvalResult
       await new Promise((resolve) => setTimeout(resolve, 4000));
 
       let response: Awaited<ReturnType<typeof ai.models.generateContent>> | null = null;
-      let retries = 8;
+      let retries = 4;
       let delayMs = 2000;
       while (retries > 0) {
         try {
@@ -117,13 +117,25 @@ export async function runEval(task: Task, serverUrl: string): Promise<EvalResult
         } catch (error: unknown) {
           const errMsg = error instanceof Error ? error.message : String(error);
           const status = (error as { status?: string })?.status;
+          const isDailyQuotaExhausted =
+            errMsg.includes('GenerateRequestsPerDayPerProjectPerModel-FreeTier') ||
+            errMsg.includes('free_tier_requests') ||
+            errMsg.includes('free tier');
           const isRateLimit =
             status === 'RESOURCE_EXHAUSTED' ||
             errMsg.includes('429') ||
             errMsg.includes('quota') ||
             errMsg.includes('503') ||
             status === 'UNAVAILABLE';
-          if (isRateLimit && retries > 1) {
+
+          if (isDailyQuotaExhausted) {
+            // Daily quota is exhausted — retrying won't help until tomorrow. Abort immediately.
+            throw new Error(
+              `[Daily Quota Exhausted] Gemini free-tier daily limit (20 req/day) reached. ` +
+              `Please wait until midnight PT for the quota to reset, or use a paid API key. ` +
+              `Original error: ${errMsg}`,
+            );
+          } else if (isRateLimit && retries > 1) {
             console.log(
               `[Rate Limit / Busy] Gemini API returned error: ${errMsg}. Retrying in ${delayMs / 1000}s...`,
             );

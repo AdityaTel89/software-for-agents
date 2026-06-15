@@ -3,7 +3,7 @@
     "task_id": "notion-create-page",
     "description": "Create a new page in the database '{{NOTION_TEST_DATABASE_ID}}' with the title 'Eval Test Page' and set the Status to 'In Progress'. Verify you get a success response back.",
     "target_server": "notion",
-    "max_steps": 6,
+    "max_steps": 3,
     "success_criteria": {
       "type": "tool_call_sequence_or_outcome",
       "expected_tools_used": ["create_page"],
@@ -17,7 +17,7 @@
     "task_id": "notion-search-pages",
     "description": "Search for pages or databases containing the query 'Eval Test' in the Notion workspace and report if any are found.",
     "target_server": "notion",
-    "max_steps": 4,
+    "max_steps": 2,
     "success_criteria": {
       "type": "tool_call_sequence_or_outcome",
       "expected_tools_used": ["search"],
@@ -28,7 +28,7 @@
     "task_id": "notion-append-paragraph",
     "description": "Append a paragraph block with the text 'Review Q3 projections' to the parent page '{{NOTION_TEST_PAGE_ID}}' using the append blocks tool.",
     "target_server": "notion",
-    "max_steps": 4,
+    "max_steps": 2,
     "success_criteria": {
       "type": "tool_call_sequence_or_outcome",
       "expected_tools_used": ["append_block_children"],
