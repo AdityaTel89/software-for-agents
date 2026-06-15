@@ -44,4 +44,4 @@ EXPOSE 8080
 ENV PORT=8080
 ENV NODE_ENV=production
 
-CMD ["node", "packages/mcp-server-notion/dist/index.js"]
+CMD ["node", "packages/mcp-server-notion/dist/index.js", "--sse"]

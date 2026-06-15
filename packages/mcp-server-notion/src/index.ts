@@ -1,6 +1,7 @@
 import express from 'express';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { createLogger, isToolError } from '@agentapi/core';
 import dotenv from 'dotenv';
@@ -154,72 +155,81 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-// Configure Express app
-const app = express();
+const isSse = process.argv.includes('--sse');
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+if (isSse) {
+  // Configure Express app
+  const app = express();
 
-const transportMap = new Map<string, SSEServerTransport>();
-
-app.get('/sse', async (req, res) => {
-  logger.info('New SSE connection requested');
-
-  // Create transport pointing POST messages to '/messages' endpoint
-  const transport = new SSEServerTransport('/messages', res);
-
-  const sessionId = transport.sessionId;
-  transportMap.set(sessionId, transport);
-  logger.info({ sessionId }, 'Created SSE transport session');
-
-  transport.onclose = () => {
-    logger.info({ sessionId }, 'SSE transport session closed');
-    transportMap.delete(sessionId);
-  };
-
-  transport.onerror = (error) => {
-    logger.error({ sessionId, error }, 'SSE transport error');
-  };
-
-  await server.connect(transport);
-});
-
-// NOTE: Do NOT use express.json() middleware globally or on this endpoint.
-// SSEServerTransport.handlePostMessage handles stream parsing internally.
-app.post('/messages', async (req, res) => {
-  const sessionId = req.query.sessionId as string;
-  const transport = transportMap.get(sessionId);
-
-  if (!transport) {
-    logger.warn({ sessionId }, 'Message POST received for non-existent session');
-    res.status(404).send('Session not found');
-    return;
-  }
-
-  try {
-    await transport.handlePostMessage(req, res);
-  } catch (error) {
-    logger.error({ sessionId, error }, 'Error handling POST message');
-  }
-});
-
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    uptime: process.uptime(),
-    activeSessions: transportMap.size,
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+    } else {
+      next();
+    }
   });
-});
 
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  logger.info(`Notion MCP Server running on port ${port}`);
-});
+  const transportMap = new Map<string, SSEServerTransport>();
+
+  app.get('/sse', async (req, res) => {
+    logger.info('New SSE connection requested');
+
+    // Create transport pointing POST messages to '/messages' endpoint
+    const transport = new SSEServerTransport('/messages', res);
+
+    const sessionId = transport.sessionId;
+    transportMap.set(sessionId, transport);
+    logger.info({ sessionId }, 'Created SSE transport session');
+
+    transport.onclose = () => {
+      logger.info({ sessionId }, 'SSE transport session closed');
+      transportMap.delete(sessionId);
+    };
+
+    transport.onerror = (error) => {
+      logger.error({ sessionId, error }, 'SSE transport error');
+    };
+
+    await server.connect(transport);
+  });
+
+  // NOTE: Do NOT use express.json() middleware globally or on this endpoint.
+  // SSEServerTransport.handlePostMessage handles stream parsing internally.
+  app.post('/messages', async (req, res) => {
+    const sessionId = req.query.sessionId as string;
+    const transport = transportMap.get(sessionId);
+
+    if (!transport) {
+      logger.warn({ sessionId }, 'Message POST received for non-existent session');
+      res.status(404).send('Session not found');
+      return;
+    }
+
+    try {
+      await transport.handlePostMessage(req, res);
+    } catch (error) {
+      logger.error({ sessionId, error }, 'Error handling POST message');
+    }
+  });
+
+  app.get('/health', (req, res) => {
+    res.status(200).json({
+      status: 'ok',
+      uptime: process.uptime(),
+      activeSessions: transportMap.size,
+    });
+  });
+
+  const port = process.env.PORT || 8080;
+  app.listen(port, () => {
+    logger.info(`Notion MCP Server running on port ${port} in SSE mode`);
+  });
+} else {
+  // Stdio mode for local Claude Desktop config
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  logger.info('Notion MCP Server running in Stdio mode');
+}
