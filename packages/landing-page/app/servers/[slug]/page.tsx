@@ -1,5 +1,5 @@
 "use client";
-import { use } from "react";
+import { use, useState } from "react";
 import { notFound } from "next/navigation";
 import { servers } from "@/lib/data";
 import Link from "next/link";
@@ -21,6 +21,15 @@ export default function Page({ params }: PageProps) {
     totalTasks: server?.totalTasks ?? 0,
     avgSteps: server?.avgSteps ?? 0,
   });
+
+  const [os, setOs] = useState<"windows" | "mac">("windows");
+  const [copiedText, setCopiedText] = useState<string | null>(null);
+
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedText(label);
+    setTimeout(() => setCopiedText(null), 2000);
+  };
 
   if (!server) {
     notFound();
@@ -113,17 +122,126 @@ export default function Page({ params }: PageProps) {
               </div>
             </div>
 
-            {/* Config Snippet */}
+            {/* Config Snippet & Guide */}
             <div className="border border-foreground/20 p-6">
               <h2 className="text-xs font-bold tracking-widest uppercase mb-4 opacity-50">
-                3. Sample Config (JSON)
+                3. Configure in Claude Desktop
               </h2>
-              <p className="text-xs text-foreground/80 mb-3 leading-relaxed">
-                Add this code to your agent&apos;s MCP configurations (e.g. Claude Desktop config at <code className="bg-foreground/10 px-1 text-[11px] font-mono">%appdata%\\Claude\\claude_desktop_config.json</code>).
-              </p>
-              <pre className="bg-foreground/5 border border-foreground/10 p-4 text-[10px] leading-relaxed overflow-x-auto select-all">
-                {server.sampleConfig}
-              </pre>
+              
+              {/* OS Tabs */}
+              <div className="flex border-b border-foreground/20 mb-4 font-mono text-xs">
+                <button
+                  onClick={() => setOs("windows")}
+                  className={`px-4 py-2 border-t border-l border-r border-transparent -mb-[1px] select-none cursor-pointer ${
+                    os === "windows"
+                      ? "border-foreground/20 bg-background font-bold"
+                      : "opacity-45 hover:opacity-100"
+                  }`}
+                >
+                  WINDOWS
+                </button>
+                <button
+                  onClick={() => setOs("mac")}
+                  className={`px-4 py-2 border-t border-l border-r border-transparent -mb-[1px] select-none cursor-pointer ${
+                    os === "mac"
+                      ? "border-foreground/20 bg-background font-bold"
+                      : "opacity-45 hover:opacity-100"
+                  }`}
+                >
+                  MACOS
+                </button>
+              </div>
+
+              {/* Guide based on OS */}
+              <div className="text-xs text-foreground/80 leading-relaxed mb-4">
+                {os === "windows" ? (
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <span className="font-bold">File Path:</span>
+                      <div className="flex gap-2 items-center mt-1">
+                        <code className="bg-foreground/10 px-2 py-1 text-[11px] font-mono break-all flex-1">
+                          %appdata%\Claude\claude_desktop_config.json
+                        </code>
+                        <button
+                          onClick={() => handleCopy("%appdata%\\Claude\\claude_desktop_config.json", "path")}
+                          className="border border-foreground/30 px-2 py-1 text-[10px] hover:bg-foreground hover:text-background transition-colors duration-200 select-none cursor-pointer font-bold"
+                        >
+                          {copiedText === "path" ? "COPIED" : "COPY PATH"}
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="font-bold">Quick Open (Run in PowerShell or CMD):</span>
+                      <div className="flex gap-2 items-center mt-1">
+                        <code className="bg-foreground/10 px-2 py-1 text-[11px] font-mono break-all flex-1">
+                          notepad %appdata%\Claude\claude_desktop_config.json
+                        </code>
+                        <button
+                          onClick={() => handleCopy("notepad %appdata%\\Claude\\claude_desktop_config.json", "cmd")}
+                          className="border border-foreground/30 px-2 py-1 text-[10px] hover:bg-foreground hover:text-background transition-colors duration-200 select-none cursor-pointer font-bold"
+                        >
+                          {copiedText === "cmd" ? "COPIED" : "COPY COMMAND"}
+                        </button>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-1 leading-normal">
+                        *Tip: Press <kbd className="bg-foreground/10 px-1 rounded">Win + R</kbd>, paste the command above, and hit Enter to edit immediately.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <span className="font-bold">File Path:</span>
+                      <div className="flex gap-2 items-center mt-1">
+                        <code className="bg-foreground/10 px-2 py-1 text-[11px] font-mono break-all flex-1">
+                          ~/Library/Application Support/Claude/claude_desktop_config.json
+                        </code>
+                        <button
+                          onClick={() => handleCopy("~/Library/Application Support/Claude/claude_desktop_config.json", "path")}
+                          className="border border-foreground/30 px-2 py-1 text-[10px] hover:bg-foreground hover:text-background transition-colors duration-200 select-none cursor-pointer font-bold"
+                        >
+                          {copiedText === "path" ? "COPIED" : "COPY PATH"}
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="font-bold">Quick Open (Run in Terminal):</span>
+                      <div className="flex gap-2 items-center mt-1">
+                        <code className="bg-foreground/10 px-2 py-1 text-[11px] font-mono break-all flex-1">
+                          open -e ~/Library/Application\ Support/Claude/claude_desktop_config.json
+                        </code>
+                        <button
+                          onClick={() => handleCopy("open -e ~/Library/Application\\ Support/Claude/claude_desktop_config.json", "cmd")}
+                          className="border border-foreground/30 px-2 py-1 text-[10px] hover:bg-foreground hover:text-background transition-colors duration-200 select-none cursor-pointer font-bold"
+                        >
+                          {copiedText === "cmd" ? "COPIED" : "COPY COMMAND"}
+                        </button>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-1 leading-normal">
+                        *Tip: Paste the command above in Terminal to open the configuration file in TextEdit.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="border-t border-foreground/10 pt-4 mt-4 relative">
+                <span className="font-bold text-xs block mb-1">4. Append configuration code:</span>
+                <p className="text-[11px] text-muted-foreground mb-3 leading-normal">
+                  Copy and merge the following snippet into the <code className="bg-foreground/10 px-1">mcpServers</code> block in your configuration file:
+                </p>
+                <div className="relative group">
+                  <pre className="bg-foreground/5 border border-foreground/10 p-4 text-[10px] leading-relaxed overflow-x-auto select-all pr-24">
+                    {server.sampleConfig}
+                  </pre>
+                  <button
+                    onClick={() => handleCopy(server.sampleConfig, "config")}
+                    className="absolute top-2 right-2 border border-foreground/30 bg-background/80 px-2 py-1 text-[10px] hover:bg-foreground hover:text-background transition-colors duration-200 select-none cursor-pointer font-mono font-bold"
+                  >
+                    {copiedText === "config" ? "COPIED CONFIG" : "COPY SNIPPET"}
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Example Tasks */}
