@@ -39,6 +39,9 @@ export function zodToMcpSchema(zodSchema: z.ZodObject<z.ZodRawShape>): {
       const subSchema = zodToMcpSchema(currentField);
       extraProperties.properties = subSchema.properties;
       extraProperties.required = subSchema.required;
+    } else if (currentField instanceof z.ZodRecord) {
+      typeName = 'object';
+      extraProperties.additionalProperties = {};
     } else if (currentField instanceof z.ZodArray) {
       typeName = 'array';
       const itemType = currentField._def.type as z.ZodTypeAny;

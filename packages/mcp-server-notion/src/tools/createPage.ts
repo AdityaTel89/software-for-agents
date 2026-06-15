@@ -17,7 +17,7 @@ const createPageSchema = z.object({
     .refine((data) => data.database_id || data.page_id, {
       message: 'Either database_id or page_id must be provided',
     })
-    .describe('The parent location. Provide either database_id OR page_id as a plain UUID string — never as a JSON string.'),
+    .describe('The parent location object. Provide either database_id or page_id as a field inside this object.'),
   properties: z
     .record(z.unknown())
     .describe(
