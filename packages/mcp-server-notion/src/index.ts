@@ -24,8 +24,8 @@ import { appendBlockChildrenTool } from './tools/appendBlockChildren.js';
 import { getDatabaseTool } from './tools/getDatabase.js';
 import { queryDatabaseTool } from './tools/queryDatabase.js';
 import { zodToMcpSchema, AnyMCPTool } from './tools/helpers.js';
-
-const logger = createLogger('mcp-server-notion');
+const isSse = process.argv.includes('--sse');
+const logger = createLogger('mcp-server-notion', isSse ? undefined : process.stderr);
 
 const tools: AnyMCPTool[] = [
   searchTool,
@@ -154,8 +154,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 });
-
-const isSse = process.argv.includes('--sse');
 
 if (isSse) {
   // Configure Express app
