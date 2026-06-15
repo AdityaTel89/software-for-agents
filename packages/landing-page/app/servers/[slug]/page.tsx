@@ -1,20 +1,31 @@
+"use client";
+import { use } from "react";
 import { notFound } from "next/navigation";
 import { servers } from "@/lib/data";
 import Link from "next/link";
 import Navbar from "@/components/ui/navbar";
 import ServerStatus from "@/components/ui/server-status";
+import { useLiveScore } from "@/components/ui/live-score";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function Page({ params }: PageProps) {
-  const { slug } = await params;
+export default function Page({ params }: PageProps) {
+  const { slug } = use(params);
   const server = servers.find((s) => s.slug === slug);
 
   if (!server) {
     notFound();
   }
+
+  // Live scores — fetched from /api/scores on every render, falls back to static values instantly
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const liveScore = useLiveScore(server.slug, {
+    successRate: server.successRate,
+    totalTasks: server.totalTasks,
+    avgSteps: server.avgSteps,
+  });
 
   return (
     <div className="bg-background text-foreground font-mono min-h-screen flex flex-col transition-colors duration-300">
@@ -38,7 +49,7 @@ export default async function Page({ params }: PageProps) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-6 pt-6 border-t border-foreground/10">
             <div>
               <div className="text-[10px] opacity-40">READINESS SCORE</div>
-              <div className="text-xl font-bold mt-1">{server.successRate}% SUCCESS</div>
+              <div className="text-xl font-bold mt-1 tabular-nums transition-all duration-500">{liveScore.successRate}% SUCCESS</div>
             </div>
             <div>
               <div className="text-[10px] opacity-40">EXPOSED TOOLS</div>
@@ -46,11 +57,11 @@ export default async function Page({ params }: PageProps) {
             </div>
             <div>
               <div className="text-[10px] opacity-40">EVALUATION TASKS</div>
-              <div className="text-xl font-bold mt-1">{server.totalTasks} RUNS</div>
+              <div className="text-xl font-bold mt-1 tabular-nums transition-all duration-500">{liveScore.totalTasks} RUNS</div>
             </div>
             <div>
               <div className="text-[10px] opacity-40">AVG STEPS TO SUCCESS</div>
-              <div className="text-xl font-bold mt-1">{server.avgSteps} STEPS</div>
+              <div className="text-xl font-bold mt-1 tabular-nums transition-all duration-500">{liveScore.avgSteps} STEPS</div>
             </div>
           </div>
         </div>
@@ -158,7 +169,7 @@ export default async function Page({ params }: PageProps) {
               <div className="border border-foreground/20 p-6 bg-foreground/5">
                 <h3 className="text-xs font-bold uppercase mb-2">Tuning Case Study</h3>
                 <p className="text-[11px] text-muted-foreground mb-3 leading-relaxed">
-                  Read how we iterated this server&apos;s schemas and descriptions to achieve a {server.successRate}% success rate.
+                  Read how we iterated this server&apos;s schemas and descriptions to achieve a {liveScore.successRate}% success rate.
                 </p>
                 <Link href={`/blog/${server.slug === "notion" ? "notion-iteration" : "freshsales-iteration"}`} className="text-xs text-foreground underline font-bold">
                   View write-up →

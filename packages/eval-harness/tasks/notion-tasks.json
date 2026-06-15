@@ -28,7 +28,7 @@
     "task_id": "notion-append-paragraph",
     "description": "Append a paragraph block with the text 'Review Q3 projections' to the parent page '{{NOTION_TEST_PAGE_ID}}' using the append blocks tool.",
     "target_server": "notion",
-    "max_steps": 2,
+    "max_steps": 3,
     "success_criteria": {
       "type": "tool_call_sequence_or_outcome",
       "expected_tools_used": ["append_block_children"],

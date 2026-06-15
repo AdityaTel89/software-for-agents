@@ -2,6 +2,7 @@ import Hero from "@/components/ui/hero-ascii";
 import { servers, blogPosts } from "@/lib/data";
 import Link from "next/link";
 import ServerStatus from "@/components/ui/server-status";
+import { LiveSuccessRate } from "@/components/ui/live-score";
 
 export default function Page() {
   return (
@@ -55,9 +56,7 @@ export default function Page() {
                     
                     {/* Success Circle/Badge */}
                     <div className="text-right">
-                      <div className="text-lg lg:text-2xl font-bold tracking-tight">
-                        {server.successRate}%
-                      </div>
+                      <LiveSuccessRate slug={server.slug} fallback={server.successRate} />
                       <div className="text-[8px] opacity-50 tracking-wider">SUCCESS RATE</div>
                     </div>
                   </div>

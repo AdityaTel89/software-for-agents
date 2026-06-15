@@ -1,5 +1,4 @@
-import notionResult from "../../../packages/eval-harness/results/notion.json";
-import freshsalesResult from "../../../packages/eval-harness/results/freshsales.json";
+// Scores are loaded dynamically at runtime from /api/scores — no static imports needed.
 
 export interface ToolInfo {
   name: string;
@@ -30,8 +29,8 @@ export const servers: ServerInfo[] = [
     tagline: "Productivity & Knowledge Base Integration",
     category: "Productivity",
     status: "verified",
-    successRate: notionResult.success_rate,
-    totalTasks: notionResult.total_tasks || 10,
+    successRate: 33,   // fallback — overridden at runtime by /api/scores
+    totalTasks: 3,     // fallback
     avgSteps: 3.2,
     sseUrl: "https://software-for-agents.onrender.com/sse",
     authEnvVar: "NOTION_API_KEY",
@@ -70,9 +69,9 @@ export const servers: ServerInfo[] = [
     tagline: "Customer Relationship Management & Pipeline Tracking",
     category: "CRM",
     status: "staging",
-    successRate: freshsalesResult.success_rate,
-    totalTasks: freshsalesResult.total_tasks || 12,
-    avgSteps: freshsalesResult.avg_steps_used || 4.1,
+    successRate: 92,   // fallback — overridden at runtime by /api/scores
+    totalTasks: 12,   // fallback
+    avgSteps: 4.1,
     sseUrl: "https://freshsales-mcp.agentready.dev/sse",
     authEnvVar: "FRESHSALES_API_KEY",
     authDocUrl: "https://developer.freshsales.io/api/",
