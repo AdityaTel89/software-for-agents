@@ -1,0 +1,9 @@
+{
+  "server": "freshsales",
+  "run_date": "2026-06-15",
+  "total_tasks": 12,
+  "passed": 11,
+  "success_rate": 92,
+  "avg_steps_used": 4.1,
+  "common_failure_modes": []
+}

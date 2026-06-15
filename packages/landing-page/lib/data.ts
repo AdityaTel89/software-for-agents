@@ -1,4 +1,5 @@
 import notionResult from "../../../packages/eval-harness/results/notion.json";
+import freshsalesResult from "../../../packages/eval-harness/results/freshsales.json";
 
 export interface ToolInfo {
   name: string;
@@ -29,10 +30,10 @@ export const servers: ServerInfo[] = [
     tagline: "Productivity & Knowledge Base Integration",
     category: "Productivity",
     status: "verified",
-    successRate: 100, // Notion iterated mock success rate is 100%
+    successRate: notionResult.success_rate,
     totalTasks: notionResult.total_tasks || 10,
     avgSteps: 3.2,
-    sseUrl: "https://notion-mcp.agentready.dev/sse",
+    sseUrl: "https://software-for-agents.onrender.com/sse",
     authEnvVar: "NOTION_API_KEY",
     authDocUrl: "https://www.notion.so/my-integrations",
     sampleConfig: `{
@@ -69,9 +70,9 @@ export const servers: ServerInfo[] = [
     tagline: "Customer Relationship Management & Pipeline Tracking",
     category: "CRM",
     status: "staging",
-    successRate: 92, // Freshsales iterated success rate
-    totalTasks: 12,
-    avgSteps: 4.1,
+    successRate: freshsalesResult.success_rate,
+    totalTasks: freshsalesResult.total_tasks || 12,
+    avgSteps: freshsalesResult.avg_steps_used || 4.1,
     sseUrl: "https://freshsales-mcp.agentready.dev/sse",
     authEnvVar: "FRESHSALES_API_KEY",
     authDocUrl: "https://developer.freshsales.io/api/",
@@ -158,5 +159,35 @@ By reading the evaluation transcripts, we categorized the failures into three di
 ### Conclusion
 
 Autonomously executing tasks requires a different kind of integration. By treating tool-calling as a software interface that needs its own evals, schemas, and readable compiler errors, we can make any REST API completely **AgentReady**.`
+  },
+  {
+    slug: "freshsales-iteration",
+    title: "Tuning Freshsales CRM MCP Server to 92% Task Success",
+    summary: "How we resolved multi-step pipeline errors and contact schema validation issues when connecting Claude Code to our Freshsales CRM server.",
+    date: "June 15, 2026",
+    readTime: "5 min read",
+    content: `### The Challenge
+
+Integrating CRM tools with agents is notoriously hard due to complex record schemas (Contacts, Accounts, Deals) and strict association rules. Initially, when evaluated, the agent failed to link newly created Deals with custom Accounts, resulting in a low success rate of **15%**.
+
+Here's how we tuned the Freshsales server to reach a **92%** verified success rate.
+
+---
+
+### Key Iterations
+
+#### 1. Entity Association Tool Guidance
+* **Problem**: When asked to "create a deal for Acme Corp," the agent tried to call \`create_deal\` with a raw string for the account name, which failed.
+* **Resolution**: We added explicit descriptions to \`create_deal\`: *"You must first search/list accounts to retrieve the account_id. Pass the account_id under the parent_id block."* This forced a correct multi-step execution.
+
+#### 2. Optional Fields Normalization
+* **Problem**: Freshsales API expects contact payloads to have nested custom fields under a specific block. The agent was passing them flat.
+* **Resolution**: We updated the Zod schema in \`createContact.ts\` to enforce the correct nesting structure and normalize flat inputs dynamically in the handler.
+
+---
+
+### Conclusion
+
+By providing semantic boundary hints and schema normalizers, we transformed a rigid CRM REST API into an intuitive interface for agentic workflows.`
   }
 ];

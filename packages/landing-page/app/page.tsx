@@ -1,6 +1,7 @@
 import Hero from "@/components/ui/hero-ascii";
 import { servers, blogPosts } from "@/lib/data";
 import Link from "next/link";
+import ServerStatus from "@/components/ui/server-status";
 
 export default function Page() {
   return (
@@ -62,12 +63,7 @@ export default function Page() {
                   </div>
 
                   {/* Staging/Production indicator */}
-                  <div className="flex items-center gap-2 text-[9px] mb-4">
-                    <span className="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse"></span>
-                    <span className="opacity-60">
-                      STATUS: {server.status === "verified" ? "VERIFIED (MOCK)" : "STAGING"}
-                    </span>
-                  </div>
+                  <ServerStatus sseUrl={server.sseUrl} initialStatus={server.status} />
 
                   {/* Tagline */}
                   <p className="text-xs text-muted-foreground mb-6 leading-relaxed">

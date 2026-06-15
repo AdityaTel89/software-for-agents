@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { servers } from "@/lib/data";
 import Link from "next/link";
 import Navbar from "@/components/ui/navbar";
+import ServerStatus from "@/components/ui/server-status";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -30,6 +31,9 @@ export default async function Page({ params }: PageProps) {
           </span>
           <h1 className="text-xl lg:text-3xl font-bold tracking-wide">{server.name}</h1>
           <p className="text-xs text-muted-foreground mt-2">{server.tagline}</p>
+          <div className="mt-4">
+            <ServerStatus sseUrl={server.sseUrl} initialStatus={server.status} />
+          </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-6 pt-6 border-t border-foreground/10">
             <div>
@@ -150,13 +154,13 @@ export default async function Page({ params }: PageProps) {
             </div>
 
             {/* Link back to blog */}
-            {server.slug === "notion" && (
+            {(server.slug === "notion" || server.slug === "freshsales") && (
               <div className="border border-foreground/20 p-6 bg-foreground/5">
                 <h3 className="text-xs font-bold uppercase mb-2">Tuning Case Study</h3>
                 <p className="text-[11px] text-muted-foreground mb-3 leading-relaxed">
-                  Read how we iterated this server&apos;s schemas and descriptions to achieve a 100% success rate.
+                  Read how we iterated this server&apos;s schemas and descriptions to achieve a {server.successRate}% success rate.
                 </p>
-                <Link href="/blog/notion-iteration" className="text-xs text-foreground underline font-bold">
+                <Link href={`/blog/${server.slug === "notion" ? "notion-iteration" : "freshsales-iteration"}`} className="text-xs text-foreground underline font-bold">
                   View write-up →
                 </Link>
               </div>

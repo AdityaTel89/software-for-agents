@@ -157,6 +157,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 // Configure Express app
 const app = express();
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 const transportMap = new Map<string, SSEServerTransport>();
 
 app.get('/sse', async (req, res) => {
