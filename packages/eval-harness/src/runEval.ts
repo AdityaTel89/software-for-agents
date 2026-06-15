@@ -96,8 +96,8 @@ export async function runEval(task: Task, serverUrl: string): Promise<EvalResult
 
     // 4. Conversation loop
     while (steps < task.max_steps && !conversationEnded) {
-      // Proactive 4-second delay to guarantee we stay under the 15 RPM (1 request per 4s) Gemini Free Tier rate limit
-      await new Promise((resolve) => setTimeout(resolve, 4000));
+      // Proactive 13-second delay to stay under the 5 RPM (1 request per 12s) Gemini Free Tier rate limit
+      await new Promise((resolve) => setTimeout(resolve, 13000));
 
       let response: Awaited<ReturnType<typeof ai.models.generateContent>> | null = null;
       let retries = 4;
@@ -117,10 +117,13 @@ export async function runEval(task: Task, serverUrl: string): Promise<EvalResult
         } catch (error: unknown) {
           const errMsg = error instanceof Error ? error.message : String(error);
           const status = (error as { status?: string })?.status;
+          // Only treat as daily quota if the error specifically mentions the *per-day* quota.
+          // The per-minute quota (GenerateRequestsPerMinutePerProjectPerModel-FreeTier) must
+          // still be retried — both share the metric name 'free_tier_requests', so we must
+          // check for 'PerDay' specifically to avoid a false positive abort.
           const isDailyQuotaExhausted =
             errMsg.includes('GenerateRequestsPerDayPerProjectPerModel-FreeTier') ||
-            errMsg.includes('free_tier_requests') ||
-            errMsg.includes('free tier');
+            (errMsg.includes('PerDay') && errMsg.includes('FreeTier'));
           const isRateLimit =
             status === 'RESOURCE_EXHAUSTED' ||
             errMsg.includes('429') ||
