@@ -15,17 +15,16 @@ export default function Page({ params }: PageProps) {
   const { slug } = use(params);
   const server = servers.find((s) => s.slug === slug);
 
+  // Hook must be called unconditionally (before any early return / notFound guard)
+  const liveScore = useLiveScore(server?.slug ?? '', {
+    successRate: server?.successRate ?? 0,
+    totalTasks: server?.totalTasks ?? 0,
+    avgSteps: server?.avgSteps ?? 0,
+  });
+
   if (!server) {
     notFound();
   }
-
-  // Live scores — fetched from /api/scores on every render, falls back to static values instantly
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const liveScore = useLiveScore(server.slug, {
-    successRate: server.successRate,
-    totalTasks: server.totalTasks,
-    avgSteps: server.avgSteps,
-  });
 
   return (
     <div className="bg-background text-foreground font-mono min-h-screen flex flex-col transition-colors duration-300">
