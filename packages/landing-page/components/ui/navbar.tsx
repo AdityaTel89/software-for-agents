@@ -1,11 +1,34 @@
 'use client';
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ui/theme-toggle";
+import { servers } from "@/lib/data";
 
 export default function Navbar() {
   const pathname = usePathname();
+
+  // Keep-alive system: ping the hosted Render/Fly servers' health endpoints
+  useEffect(() => {
+    const pingServers = () => {
+      servers.forEach((server) => {
+        // Render free tier sleeping workaround: replace '/sse' with '/health' and trigger ping
+        const healthUrl = server.sseUrl.replace(/\/sse$/, "/health");
+        fetch(healthUrl).catch((err) => {
+          console.warn(`[Keep-Alive] Failed to ping health for ${server.name}:`, err);
+        });
+      });
+    };
+
+    // Ping immediately on load to wake up sleeping Render servers
+    pingServers();
+
+    // Ping every 5 minutes (300000 ms) to prevent sleeping
+    const interval = setInterval(pingServers, 300000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Determine current page marker
   let pageMarker = "[ DIRECTORY ]";

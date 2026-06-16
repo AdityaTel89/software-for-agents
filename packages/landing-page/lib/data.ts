@@ -38,9 +38,10 @@ export const servers: ServerInfo[] = [
     sampleConfig: `{
   "mcpServers": {
     "notion": {
-      "transport": {
-        "type": "sse",
-        "url": "https://software-for-agents.onrender.com/sse"
+      "command": "npx",
+      "args": ["-y", "mcp-server-notion"],
+      "env": {
+        "NOTION_API_KEY": "your_integration_token"
       }
     }
   }
@@ -77,9 +78,11 @@ export const servers: ServerInfo[] = [
     sampleConfig: `{
   "mcpServers": {
     "freshsales": {
-      "transport": {
-        "type": "sse",
-        "url": "https://freshsales-mcp.agentready.dev/sse"
+      "command": "npx",
+      "args": ["-y", "mcp-server-freshsales"],
+      "env": {
+        "FRESHSALES_API_KEY": "your_api_key",
+        "FRESHSALES_DOMAIN": "your_subdomain"
       }
     }
   }

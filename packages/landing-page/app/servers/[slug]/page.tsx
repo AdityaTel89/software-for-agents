@@ -171,20 +171,20 @@ export default function Page({ params }: PageProps) {
                       </div>
                     </div>
                     <div>
-                      <span className="font-bold">Quick Open (Run in PowerShell or CMD):</span>
+                      <span className="font-bold">Quick Open (Run in Run Dialog, CMD or PowerShell):</span>
                       <div className="flex gap-2 items-center mt-1">
                         <code className="bg-foreground/10 px-2 py-1 text-[11px] font-mono break-all flex-1">
-                          notepad %appdata%\Claude\claude_desktop_config.json
+                          cmd /c "mkdir %appdata%\Claude & notepad %appdata%\Claude\claude_desktop_config.json"
                         </code>
                         <button
-                          onClick={() => handleCopy("notepad %appdata%\\Claude\\claude_desktop_config.json", "cmd")}
+                          onClick={() => handleCopy("cmd /c \"mkdir %appdata%\\Claude & notepad %appdata%\\Claude\\claude_desktop_config.json\"", "cmd")}
                           className="border border-foreground/30 px-2 py-1 text-[10px] hover:bg-foreground hover:text-background transition-colors duration-200 select-none cursor-pointer font-bold"
                         >
                           {copiedText === "cmd" ? "COPIED" : "COPY COMMAND"}
                         </button>
                       </div>
                       <p className="text-[10px] text-muted-foreground mt-1 leading-normal">
-                        *Tip: Press <kbd className="bg-foreground/10 px-1 rounded">Win + R</kbd>, paste the command above, and hit Enter to edit immediately.
+                        *Tip: Press <kbd className="bg-foreground/10 px-1 rounded">Win + R</kbd>, paste the command above, and hit Enter to automatically create the folder and edit the config file.
                       </p>
                     </div>
                   </div>
@@ -208,17 +208,17 @@ export default function Page({ params }: PageProps) {
                       <span className="font-bold">Quick Open (Run in Terminal):</span>
                       <div className="flex gap-2 items-center mt-1">
                         <code className="bg-foreground/10 px-2 py-1 text-[11px] font-mono break-all flex-1">
-                          open -e ~/Library/Application\ Support/Claude/claude_desktop_config.json
+                          mkdir -p ~/Library/Application\ Support/Claude && touch ~/Library/Application\ Support/Claude/claude_desktop_config.json && open -e ~/Library/Application\ Support/Claude/claude_desktop_config.json
                         </code>
                         <button
-                          onClick={() => handleCopy("open -e ~/Library/Application\\ Support/Claude/claude_desktop_config.json", "cmd")}
+                          onClick={() => handleCopy("mkdir -p ~/Library/Application\\ Support/Claude && touch ~/Library/Application\\ Support/Claude/claude_desktop_config.json && open -e ~/Library/Application\\ Support/Claude/claude_desktop_config.json", "cmd")}
                           className="border border-foreground/30 px-2 py-1 text-[10px] hover:bg-foreground hover:text-background transition-colors duration-200 select-none cursor-pointer font-bold"
                         >
                           {copiedText === "cmd" ? "COPIED" : "COPY COMMAND"}
                         </button>
                       </div>
                       <p className="text-[10px] text-muted-foreground mt-1 leading-normal">
-                        *Tip: Paste the command above in Terminal to open the configuration file in TextEdit.
+                        *Tip: Paste the command above in Terminal to automatically create the folder and open the config file in TextEdit.
                       </p>
                     </div>
                   </div>
