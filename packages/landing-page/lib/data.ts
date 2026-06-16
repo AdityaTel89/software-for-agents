@@ -62,52 +62,6 @@ export const servers: ServerInfo[] = [
       "Query the Bug Tracker database for all open bugs with critical priority.",
       "Update the 'Launch Date' property of the 'V1 Release' page to next Friday."
     ]
-  },
-  {
-    slug: "freshsales",
-    name: "Freshsales CRM Server",
-    tagline: "Customer Relationship Management & Pipeline Tracking",
-    category: "CRM",
-    status: "staging",
-    successRate: 92,   // fallback — overridden at runtime by /api/scores
-    totalTasks: 12,   // fallback
-    avgSteps: 4.1,
-    sseUrl: "https://freshsales-mcp.agentready.dev/sse",
-    authEnvVar: "FRESHSALES_API_KEY",
-    authDocUrl: "https://developer.freshsales.io/api/",
-    sampleConfig: `{
-  "mcpServers": {
-    "freshsales": {
-      "command": "npx",
-      "args": ["-y", "mcp-server-freshsales"],
-      "env": {
-        "FRESHSALES_API_KEY": "your_api_key",
-        "FRESHSALES_DOMAIN": "your_subdomain"
-      }
-    }
-  }
-}`,
-    tools: [
-      { name: "list_accounts", description: "Retrieve sales accounts with pagination" },
-      { name: "get_account", description: "Get detailed information about a specific account" },
-      { name: "create_account", description: "Create a new sales account for a company" },
-      { name: "update_account", description: "Update details of an existing sales account" },
-      { name: "list_contacts", description: "List contacts / leads associated with accounts" },
-      { name: "get_contact", description: "Get complete details about a specific contact" },
-      { name: "create_contact", description: "Create a new customer contact in CRM" },
-      { name: "update_contact", description: "Update properties or stage of a contact" },
-      { name: "delete_contact", description: "Delete a contact from CRM database" },
-      { name: "list_deals", description: "Retrieve CRM sales deals and pipelines" },
-      { name: "get_deal", description: "Get specific deal information" },
-      { name: "create_deal", description: "Create a new sales deal / opportunity" },
-      { name: "update_deal", description: "Update deal amount, close date, or pipeline stage" }
-    ],
-    exampleTasks: [
-      "Find the contact 'Jane Doe' and update her phone number.",
-      "Create a new deal of $15,000 named 'Q3 Expansion' for Acme Corp.",
-      "List all accounts created in the last 30 days.",
-      "Move deal 'Enterprise Pilot' to the Closed-Won stage."
-    ]
   }
 ];
 
@@ -158,35 +112,5 @@ By reading the evaluation transcripts, we categorized the failures into three di
 ### Conclusion
 
 Autonomously executing tasks requires a different kind of integration. By treating tool-calling as a software interface that needs its own evals, schemas, and readable compiler errors, we can make any REST API completely **AgentReady**.`
-  },
-  {
-    slug: "freshsales-iteration",
-    title: "Tuning Freshsales CRM MCP Server to 92% Task Success",
-    summary: "How we resolved multi-step pipeline errors and contact schema validation issues when connecting Claude Code to our Freshsales CRM server.",
-    date: "June 15, 2026",
-    readTime: "5 min read",
-    content: `### The Challenge
-
-Integrating CRM tools with agents is notoriously hard due to complex record schemas (Contacts, Accounts, Deals) and strict association rules. Initially, when evaluated, the agent failed to link newly created Deals with custom Accounts, resulting in a low success rate of **15%**.
-
-Here's how we tuned the Freshsales server to reach a **92%** verified success rate.
-
----
-
-### Key Iterations
-
-#### 1. Entity Association Tool Guidance
-* **Problem**: When asked to "create a deal for Acme Corp," the agent tried to call \`create_deal\` with a raw string for the account name, which failed.
-* **Resolution**: We added explicit descriptions to \`create_deal\`: *"You must first search/list accounts to retrieve the account_id. Pass the account_id under the parent_id block."* This forced a correct multi-step execution.
-
-#### 2. Optional Fields Normalization
-* **Problem**: Freshsales API expects contact payloads to have nested custom fields under a specific block. The agent was passing them flat.
-* **Resolution**: We updated the Zod schema in \`createContact.ts\` to enforce the correct nesting structure and normalize flat inputs dynamically in the handler.
-
----
-
-### Conclusion
-
-By providing semantic boundary hints and schema normalizers, we transformed a rigid CRM REST API into an intuitive interface for agentic workflows.`
   }
 ];

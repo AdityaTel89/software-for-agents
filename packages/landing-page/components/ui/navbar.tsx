@@ -36,8 +36,6 @@ export default function Navbar() {
     pageMarker = "[ METHODOLOGY ]";
   } else if (pathname.startsWith("/servers/notion")) {
     pageMarker = "[ INTEGRATION: NOTION ]";
-  } else if (pathname.startsWith("/servers/freshsales")) {
-    pageMarker = "[ INTEGRATION: FRESHSALES ]";
   } else if (pathname.startsWith("/blog")) {
     pageMarker = "[ CASE STUDY ]";
   } else if (pathname === "/demo") {
@@ -70,7 +68,7 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-3 text-[10px] font-mono text-foreground/60">
           <span>EVALS: ACTIVE</span>
           <div className="w-1 h-1 bg-foreground/40 rounded-full"></div>
-          <span>SERVERS: 2 ONLINE</span>
+          <span>SERVERS: {servers.length} ONLINE</span>
           <div className="w-1 h-1 bg-foreground/40 rounded-full"></div>
           <ThemeToggle />
         </div>

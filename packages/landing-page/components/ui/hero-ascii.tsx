@@ -165,18 +165,14 @@ export default function Home() {
                   <span className="text-foreground">100.0% (VERIFIED)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>FRESHSALES HARNESS ACCURACY:</span>
-                  <span className="text-foreground">92.0% (STAGING)</span>
-                </div>
-                <div className="flex justify-between">
                   <span>TOTAL TEST RUNS LOGGED:</span>
-                  <span className="text-foreground">22 / 22 TASKS</span>
+                  <span className="text-foreground">3 / 3 TASKS</span>
                 </div>
               </div>
               <div className="border-t border-foreground/10 pt-2 text-[8px] lg:text-[9px] text-muted-foreground/60 flex flex-col gap-1 select-none font-mono">
                 <div>[14:03:12] init: mcp SSE transport connection established</div>
                 <div>[14:03:15] notion.query_database: query filtering page rows (passed)</div>
-                <div>[14:03:22] freshsales.create_contact: validating stage lifecycle (passed)</div>
+                <div>[14:03:22] notion.create_page: page created inside parent database (passed)</div>
               </div>
             </div>
 
@@ -226,7 +222,6 @@ export default function Home() {
           
           <div className="flex items-center gap-2 lg:gap-4 text-[8px] lg:text-[9px] font-mono text-foreground/50">
             <span className="hidden lg:inline">◐ NOTION: 100% SUCCESS</span>
-            <span className="hidden lg:inline">◐ FRESHSALES: 92% SUCCESS</span>
             <div className="flex gap-1">
               <div className="w-1 h-1 bg-foreground/60 rounded-full animate-pulse"></div>
               <div className="w-1 h-1 bg-foreground/40 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>

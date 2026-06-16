@@ -282,13 +282,13 @@ export default function Page({ params }: PageProps) {
             </div>
 
             {/* Link back to blog */}
-            {(server.slug === "notion" || server.slug === "freshsales") && (
+            {server.slug === "notion" && (
               <div className="border border-foreground/20 p-6 bg-foreground/5">
                 <h3 className="text-xs font-bold uppercase mb-2">Tuning Case Study</h3>
                 <p className="text-[11px] text-muted-foreground mb-3 leading-relaxed">
                   Read how we iterated this server&apos;s schemas and descriptions to achieve a {liveScore.successRate}% success rate.
                 </p>
-                <Link href={`/blog/${server.slug === "notion" ? "notion-iteration" : "freshsales-iteration"}`} className="text-xs text-foreground underline font-bold">
+                <Link href="/blog/notion-iteration" className="text-xs text-foreground underline font-bold">
                   View write-up →
                 </Link>
               </div>

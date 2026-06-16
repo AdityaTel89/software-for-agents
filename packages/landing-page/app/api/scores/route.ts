@@ -29,7 +29,7 @@ function readResultFile(serverName: string): ScoreData | null {
 }
 
 export async function GET() {
-  const servers = ["notion", "freshsales"];
+  const servers = ["notion"];
   const scores: Record<string, ScoreData | null> = {};
 
   for (const server of servers) {
